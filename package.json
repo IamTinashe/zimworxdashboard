@@ -1,13 +1,13 @@
 {
-  "name": "nuxt-black-dashboard",
+  "name": "dashboard",
   "version": "1.1.0",
-  "description": "Nuxt Black Dashboard",
-  "author": "creativetim",
+  "description": "ZimWorX dashboard",
+  "author": "Tinashe Zvihwati",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt --port 8090",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "nuxt start --port 8090",
     "generate": "nuxt generate"
   },
   "dependencies": {
