@@ -1,0 +1,364 @@
+{
+  "states": [
+    {
+      "id": "US-NC",
+      "value": 16,
+      "dso": 1,
+      "rcm": 1,
+      "locations": 31,
+      "teamMembers": 22
+    },
+    {
+      "id": "US-TX",
+      "value": 56,
+      "dso": 8,
+      "rcm": 7,
+      "locations": 276,
+      "teamMembers": 167
+    },
+    {
+      "id": "US-NJ",
+      "value": 10,
+      "dso": 2,
+      "rcm": 1,
+      "locations": 21,
+      "teamMembers": 40
+    },
+    {
+      "id": "US-CA",
+      "value": 20,
+      "dso": 1,
+      "rcm": 3,
+      "locations": 59,
+      "teamMembers": 46
+    },
+    {
+      "id": "US-VA",
+      "value": 13,
+      "dso": 2,
+      "rcm": 1,
+      "locations": 36,
+      "teamMembers": 36
+    },
+    {
+      "id": "US-CO",
+      "value": 10,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 15,
+      "teamMembers": 26
+    },
+    {
+      "id": "US-MA",
+      "value": 7,
+      "dso": 2,
+      "rcm": 2,
+      "locations": 83,
+      "teamMembers": 20
+    },
+    {
+      "id": "US-IL",
+      "value": 16,
+      "dso": 4,
+      "rcm": 1,
+      "locations": 25,
+      "teamMembers": 42
+    },
+    {
+      "id": "US-NY",
+      "value": 20,
+      "dso": 4,
+      "rcm": 0,
+      "locations": 49,
+      "teamMembers": 48
+    },
+    {
+      "id": "US-UT",
+      "value": 3,
+      "dso": 0,
+      "rcm": 1,
+      "locations": 3,
+      "teamMembers": 12
+    },
+    {
+      "id": "US-AZ",
+      "value": 9,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 28,
+      "teamMembers": 27
+    },
+    {
+      "id": "US-WI",
+      "value": 2,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 4,
+      "teamMembers": 7
+    },
+    {
+      "id": "US-MD",
+      "value": 15,
+      "dso": 2,
+      "rcm": 0,
+      "locations": 28,
+      "teamMembers": 35
+    },
+    {
+      "id": "US-MO",
+      "value": 9,
+      "dso": 2,
+      "rcm": 1,
+      "locations": 47,
+      "teamMembers": 19
+    },
+    {
+      "id": "US-KS",
+      "value": 3,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 3,
+      "teamMembers": 7
+    },
+    {
+      "id": "US-TN",
+      "value": 8,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 9,
+      "teamMembers": 16
+    },
+    {
+      "id": "US-GA",
+      "value": 16,
+      "dso": 10,
+      "rcm": 0,
+      "locations": 97,
+      "teamMembers": 26
+    },
+    {
+      "id": "US-OR",
+      "value": 3,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 10,
+      "teamMembers": 7
+    },
+    {
+      "id": "US-WA",
+      "value": 14,
+      "dso": 4,
+      "rcm": 1,
+      "locations": 55,
+      "teamMembers": 22
+    },
+    {
+      "id": "US-FL",
+      "value": 22,
+      "dso": 2,
+      "rcm": 1,
+      "locations": 43,
+      "teamMembers": 27
+    },
+    {
+      "id": "US-PA",
+      "value": 10,
+      "dso": 2,
+      "rcm": 0,
+      "locations": 15,
+      "teamMembers": 15
+    },
+    {
+      "id": "US-DC",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 2,
+      "teamMembers": 3
+    },
+    {
+      "id": "US-SC",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 3
+    },
+    {
+      "id": "Scotland",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 90,
+      "teamMembers": 3
+    },
+    {
+      "id": "Ontario",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 3
+    },
+    {
+      "id": "US-OK",
+      "value": 5,
+      "dso": 1,
+      "rcm": 1,
+      "locations": 30,
+      "teamMembers": 7
+    },
+    {
+      "id": "Harare",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 2
+    },
+    {
+      "id": "England",
+      "value": 4,
+      "dso": 3,
+      "rcm": 0,
+      "locations": 164,
+      "teamMembers": 5
+    },
+    {
+      "id": "US-OH",
+      "value": 3,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 13,
+      "teamMembers": 4
+    },
+    {
+      "id": "US-NH",
+      "value": 2,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 2,
+      "teamMembers": 3
+    },
+    {
+      "id": "US-MI",
+      "value": 9,
+      "dso": 2,
+      "rcm": 0,
+      "locations": 28,
+      "teamMembers": 10
+    },
+    {
+      "id": "US-RI",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 2
+    },
+    {
+      "id": "US-MN",
+      "value": 8,
+      "dso": 1,
+      "rcm": 1,
+      "locations": 32,
+      "teamMembers": 9
+    },
+    {
+      "id": "US-KY",
+      "value": 1,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 4,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-MT",
+      "value": 2,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 2,
+      "teamMembers": 2
+    },
+    {
+      "id": "US-PR",
+      "value": 1,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-IN",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-MS",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-NV",
+      "value": 2,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 2,
+      "teamMembers": 2
+    },
+    {
+      "id": "US-IA",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-ID",
+      "value": 3,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 12,
+      "teamMembers": 3
+    },
+    {
+      "id": "US-AR",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-NE",
+      "value": 1,
+      "dso": 1,
+      "rcm": 0,
+      "locations": 2,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-HI",
+      "value": 1,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 1,
+      "teamMembers": 1
+    },
+    {
+      "id": "US-XX",
+      "value": 100,
+      "dso": 0,
+      "rcm": 0,
+      "locations": 0,
+      "teamMembers": 167
+    }
+  ]
+}
