@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@nuxtjs/vuetify": "^3.6.8",
+    "@nuxtjs/vuetify": "^1.12.3",
     "babel-plugin-component": "^1.1.1",
     "sass": "1.56.2",
     "sass-loader": "10.1.1"
