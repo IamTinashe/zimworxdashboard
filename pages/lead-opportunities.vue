@@ -16,6 +16,12 @@
                   <v-toolbar-title>Sales Summary</v-toolbar-title>
                   <v-divider class="mx-4" inset vertical></v-divider>
                   <v-toolbar-title>{{ totalSeatsWon }} Seats Won</v-toolbar-title>
+                  <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-typography>{{ totalNewWon }} New Seats</v-typography>
+                  <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-typography>{{ totalAdditionalWon }} Additions</v-typography>
+                  <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-typography>{{ totalReplacementWon }} Replacements</v-typography>
                 </v-toolbar>
               </template>
             </v-data-table>
@@ -25,7 +31,7 @@
                   <span class="headline">{{ selectedSalesPerson.salesPerson }}</span>
                 </v-card-title>
                 <v-card-text>
-                  <v-data-table :headers="modalHeaders" :items="filteredSalesData" class="elevation-1"></v-data-table>
+                  <v-data-table :headers="modalHeaders" :items="filteredSalesData" @click:row="openOpportunity" class="elevation-1"></v-data-table>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -56,20 +62,28 @@ export default {
       allOpportunites: [],
       monthlyReport: [],
       totalSeatsWon: 0,
+      totalAdditionalWon: 0,
+      totalNewWon: 0,
+      totalReplacementWon: 0,
       headers: [
         { text: "Salesperson", value: "salesPerson" },
-        { text: "Prospective Clients", value: "prospectiveClients" },
+        { text: "Total Seats Won", value: "totalSeats" },
         { text: "Additional Seats", value: "additionalSeats" },
         { text: "Replacement Seats", value: "replacementSeats" },
         { text: "New Seats", value: "newSeats" },
-        { text: "Total Seats Won", value: "totalSeats" }
+        { text: "Prospective Clients", value: "prospectiveClients" },
       ],
       modalHeaders: [
         { text: "Company", value: "company" },
+        { text: "Seat Category", value: "seatCategory" },
+        { text: "Days To Close", value: "totalTimeToClose" },
+        { text: "Industry", value: "industryType" },
+        { text: "Practice Type", value: "practiceType" },
+        { text: "Source", value: "source" },
         { text: "Seat Type", value: "seatType" },
         { text: "Seat Count", value: "seatCount" },
         { text: "Client Type", value: "clientType" },
-        { text: "Seat Category", value: "seatCategory" }
+        { text: "Won Date", value: "closedDate" },
       ],
       summarizedData: [],
       isModalOpen: false,
@@ -91,6 +105,16 @@ export default {
       const day = String(now.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
+    dateConvertor: (date) => {
+      let formattedDate = new Date(date * 1000);
+      let dayOfMonth = formattedDate.getDate();
+      let month = formattedDate.getMonth() + 1;
+      let year = formattedDate.getFullYear();
+      let formattedDayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
+      let formattedMonth = month < 10 ? '0' + month : month;
+
+      return `${formattedDayOfMonth}-${formattedMonth}-${year}`;
+    },
     filterByClosedMonthYear(data, month, year) {
       return data.filter(item => {
         if (item.closedDate) {
@@ -105,6 +129,10 @@ export default {
       const month = parseInt(parts[1], 10);
       return month - 1;
     },
+    openOpportunity:(item)=>{
+      const url = `https://zimworx.odoo.com/web?#id=${item.id}&menu_id=255&cids=2&action=380&model=crm.lead&view_type=form`;
+      window.open(url, '_blank');
+    },
     getYearFromString(dateString) {
       const parts = dateString.split('-');
       if (parts.length >= 1) {
@@ -118,6 +146,9 @@ export default {
     },
     summarizeData(salesData) {
       const summary = {};
+      this.totalAdditionalWon = 0;
+      this.totalReplacementWon = 0;
+      this.totalNewWon = 0;
 
       salesData.forEach(entry => {
         let salesperson = entry.salesPerson;
@@ -139,10 +170,13 @@ export default {
 
         if (entry.seatType === "Additional Seats") {
           summary[salesperson].additionalSeats += entry.seatCount;
+          this.totalAdditionalWon += entry.seatCount;
         } else if (entry.seatType === "Replacement Seats") {
           summary[salesperson].replacementSeats += entry.seatCount;
+          this.totalReplacementWon += entry.seatCount;
         } else if (entry.seatType === "New Seats") {
           summary[salesperson].newSeats += entry.seatCount;
+          this.totalNewWon += entry.seatCount;
         }
 
         if (entry.clientType === "Prospective") {
@@ -159,6 +193,11 @@ export default {
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.salesPerson === item.salesPerson
       );
+      this.filteredSalesData = this.filteredSalesData.map(item => ({
+        ...item,
+        closedDate: this.dateConvertor(item.closedDate)
+      }));
+
       this.isModalOpen = true;
     },
     generateReport(date) {
