@@ -1,50 +1,56 @@
 <template>
   <div class="row">
     <!-- Big Chart -->
-    <div class="col-12">
+    <div class="col-12 col-md-12">
       <div class="row" v-if="!loading">
-        <div class="col-12">
+        <div class="col-12 col-md-12">
           <scorecardnumbers :date="date" :allreports="fetchedData" v-if="fetchedData" />
         </div>
       </div>
       <div class="row" v-if="!loading && monthlyReport">
-        <div class="col-6">
+        <div class="col-12 col-md-6">
           <div class="card">
             <div class="row">
-              <div class="col-4" style="border-right: 1px solid #eee;">
+              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title text-center">WARM Opportunities</h4>
-                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].warmLeads }}</h3>
-                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{ monthlyReport[monthlyReport.length - 1].warmSeats }} Seats</h3>
+                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].warmLeads }}
+                    </h3>
+                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
+        monthlyReport[monthlyReport.length - 1].warmSeats }} Seats</h3>
                   </slot>
                 </div>
               </div>
-              <div class="col-4" style="border-right: 1px solid #eee;">
+              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title text-center">MILD Opportunities</h4>
-                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].mildLeads }}</h3>
-                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{ monthlyReport[monthlyReport.length - 1].mildSeats }} Seats</h3>
+                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].mildLeads }}
+                    </h3>
+                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
+        monthlyReport[monthlyReport.length - 1].mildSeats }} Seats</h3>
                   </slot>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-12 col-md-4">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title text-center">HOT Opportunities</h4>
-                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].hotLeads }}</h3>
-                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{ monthlyReport[monthlyReport.length - 1].hotSeats }} Seats</h3>
+                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].hotLeads }}
+                    </h3>
+                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
+        monthlyReport[monthlyReport.length - 1].hotSeats }} Seats</h3>
                   </slot>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-6">
+        <div class="col-12 col-md-6">
           <div class="card text-center">
             <div class="row pb-4">
-              <div class="col-4" style="border-right: 1px solid #eee;">
+              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title">MTD Seats Won</h4>
@@ -52,7 +58,7 @@
                   </slot>
                 </div>
               </div>
-              <div class="col-4" style="border-right: 1px solid #eee;">
+              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title">MTD Seats Lost</h4>
@@ -60,11 +66,12 @@
                   </slot>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-12 col-md-4">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title">MTD Gained Seats</h4>
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].seatedThisMonth - monthlyReport[monthlyReport.length - 1].lostSeatsThisMonth }}</h3>
+                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].seatedThisMonth -
+        monthlyReport[monthlyReport.length - 1].lostSeatsThisMonth }}</h3>
                   </slot>
                 </div>
               </div>
@@ -73,15 +80,15 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-8">
+        <div class="col-12 col-md-8">
           <card type="chart">
             <template slot="header">
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col-12 col-md-6">
                   <h5 class="card-category">Seat and Revenue Stats</h5>
                   <h2 class="card-title">Growth Rate</h2>
                 </div>
-                <div class="col-sm-6 d-flex d-sm-block">
+                <div class="col-12 col-md-6 d-flex d-sm-block">
                   <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
                     <label v-for="(option, index) in bigLineChartCategories" :key="option.name"
                       class="btn btn-sm btn-primary btn-simple" :class="{ active: bigLineChart.activeIndex === index }"
@@ -106,7 +113,7 @@
           </card>
 
           <div class="row">
-            <div class="col-12">
+            <div class="col-12 col-md-12">
               <card type="chart" v-if="!loading">
                 <template slot="header">
                   <h5 class="card-category">This Month Seats</h5>
@@ -117,7 +124,7 @@
                   </h3>
                 </template>
                 <div class="row">
-                  <div class="col-10">
+                  <div class="col-12 col-md-10">
 
                     <div class="chart-area">
                       <line-chart style="height: 100%" :chart-data="purpleLineChart.chartData"
@@ -126,7 +133,7 @@
                       </line-chart>
                     </div>
                   </div>
-                  <div class="col-2">
+                  <div class="col-12 col-md-2">
                     <div class="row mb-4" v-for="(item, index) in byType">
                       <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
                       <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
@@ -137,7 +144,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12">
+            <div class="col-12 col-md-12">
               <card type="chart" v-if="!loading">
                 <template slot="header">
                   <h5 class="card-category">This Month Seats</h5>
@@ -146,7 +153,7 @@
                   </h3>
                 </template>
                 <div class="row">
-                  <div class="col-10">
+                  <div class="col-12 col-md-10">
                     <div class="chart-area">
                       <line-chart style="height: 100%" :chart-data="greenLineChart.chartData"
                         :gradient-colors="greenLineChart.gradientColors" :gradient-stops="greenLineChart.gradientStops"
@@ -154,7 +161,7 @@
                       </line-chart>
                     </div>
                   </div>
-                  <div class="col-2">
+                  <div class="col-12 col-md-2">
                     <div class="row mb-3" v-for="(item, index) in byCategory">
                       <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
                       <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
@@ -165,32 +172,32 @@
             </div>
           </div>
         </div>
-        <div class="col-4">
+        <div class="col-12 col-md-4">
           <div class="card text-center" v-if="!loading">
             <div class="row">
-              <div class="col-4" style="border-right: 1px solid #eee;">
+              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title">Zimbabwe</h4>
-                    <img src="/zimbabwe.png" style="width: 20px; margin-bottom: 5px;"/>
+                    <img src="/zimbabwe.png" style="width: 20px; margin-bottom: 5px;" />
                     <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].zimbabweSeats }}</h3>
                   </slot>
                 </div>
               </div>
-              <div class="col-4" style="border-right: 1px solid #eee;">
+              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title">Costa Rica</h4>
-                    <img src="/costa-rica.png" style="width: 20px; margin-bottom: 5px;"/>
+                    <img src="/costa-rica.png" style="width: 20px; margin-bottom: 5px;" />
                     <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].costaRicaSeats }}</h3>
                   </slot>
                 </div>
               </div>
-              <div class="col-4">
+              <div class="col-12 col-md-4">
                 <div class="card-header headerClasses">
                   <slot name="header">
                     <h4 class="card-title">Zambia</h4>
-                    <img src="/zambia.png" style="width: 20px; margin-bottom: 5px;"/>
+                    <img src="/zambia.png" style="width: 20px; margin-bottom: 5px;" />
                     <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].zambiaSeats }}</h3>
                   </slot>
                 </div>
@@ -214,7 +221,7 @@
       </div>
 
       <div class="row">
-        <div class="col-4" v-if="!loading">
+        <div class="col-12 col-md-4" v-if="!loading">
           <card type="chart">
             <template slot="header">
               <h3 class="card-title">
@@ -240,7 +247,7 @@
             </div>
           </card>
         </div>
-        <div class="col-8">
+        <div class="col-12 col-md-8">
           <card card-body-classes="table-full-width">
             <h4 slot="header" class="card-title">Salespersons</h4>
             <el-table :data="salespersonSummary">
@@ -257,12 +264,13 @@
       </div>
 
       <div class="row" v-if="!loading">
-        <div class="col-12">
+        <div class="col-12 col-md-12">
           <card card-body-classes="table-full-width">
             <h4 slot="header" class="card-title">Top 10 Clients</h4>
             <el-table :data="tableData">
               <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
               <el-table-column min-width="150" sortable label="Salesperson" property="salesperson"></el-table-column>
+              <el-table-column min-width="150" sortable label="CSP" property="csp"></el-table-column>
               <el-table-column min-width="150" sortable label="Industry" property="industry"></el-table-column>
               <el-table-column min-width="100" sortable label="Locations"
                 property="numberOfLocations"></el-table-column>
@@ -623,17 +631,20 @@ export default {
 
     getTopTenClients(clients) {
       clients.sort((a, b) => b.totalSeats - a.totalSeats);
-      let top10Clients = clients.slice(0, 10);
+      let top10Clients = clients; //.slice(0, 10);
       top10Clients.forEach(client => {
         client.revenue = `$${Math.ceil(client.revenue)}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        client.tenure = this.formatDaysToYearsMonthsDays(client.tenure);
       });
 
       return top10Clients;
     },
 
     setClientsBySalesperson(clients) {
+      let seats = 0;
       let salespersonData = {};
       clients.forEach(client => {
+        seats = client.totalSeats + seats;
         let salesperson = client.salesperson;
         if (!salespersonData[salesperson]) {
           salespersonData[salesperson] = {
@@ -648,6 +659,8 @@ export default {
         salespersonData[salesperson].totalRevenue += client.revenue;
       });
 
+      console.log(seats)
+
       this.salespersonSummary = Object.values(salespersonData);
       this.salespersonSummary.sort((a, b) => b.totalSeats - a.totalSeats);
       this.salespersonSummary.forEach(salesperson => {
@@ -658,6 +671,27 @@ export default {
         this.purpleBarChart.chartData.labels.push(salesperson.name);
         this.purpleBarChart.chartData.datasets[0].data.push(salesperson.totalRevenue);
       })
+    },
+
+    formatDaysToYearsMonthsDays(totalDays) {
+      const daysInYear = 365;
+      const daysInMonth = 30;
+
+      // Calculate years
+      const years = Math.floor(totalDays / daysInYear);
+      let remainingDays = totalDays % daysInYear;
+
+      // Calculate months
+      const months = Math.floor(remainingDays / daysInMonth);
+      remainingDays = remainingDays % daysInMonth;
+
+      // Remaining days
+      const days = remainingDays;
+      if(years> 0){
+        return `${years} years, ${months} months, ${days} days`;
+      }else{
+        return `${months} months, ${days} days`;
+      }
     }
   },
   async mounted() {
@@ -706,7 +740,7 @@ export default {
   color: #a0a0a0 !important;
 }
 
-.color-black{
+.color-black {
   color: black !important;
 }
 </style>
