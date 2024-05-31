@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
+    "apexcharts": "^3.49.1",
     "axios": "^1.6.8",
     "bootstrap": "4.3.1",
     "chart.js": "2.9.4",
@@ -26,6 +27,7 @@
     "perfect-scrollbar": "^1.5.5",
     "register-service-worker": "^1.7.2",
     "tween.js": "16.6.0",
+    "vue-apexcharts": "^1.6.2",
     "vue-chartjs": "3.5.1",
     "vue-i18n": "8.0.0",
     "vue2-transitions": "0.3.0"

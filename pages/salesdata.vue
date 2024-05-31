@@ -11,7 +11,7 @@
           <div class="row">
             <div class="col-md-10"></div>
             <div class="col-md-2 col-12">
-              <v-btn :color="defaultColor" class="mb-0" @click="dialog = true">Select Month</v-btn>
+              <v-btn :color="defaultColor" class="mb-3" @click="dialog = true">Select Month</v-btn>
               <v-dialog v-model="dialog" max-width="300" class="elevation-1 mt-0">
                 <v-card>
                   <v-card-title class="headline">Select a Month</v-card-title>
@@ -30,18 +30,99 @@
         </div>
         <div class="row">
           <div class="col-12">
+            <div class="card pb-3">
+              <div class="row">
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Total Seats</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ totalSeatsWon }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <div class="col-12 col-md-2">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">New Seats</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ totalNewWon }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <div class="col-12 col-md-2">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Additional Seats</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ totalAdditionalWon }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <div class="col-12 col-md-2">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Replacement Seats</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ totalReplacementWon }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card pb-3">
+              <div class="row">
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Top Category</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ topCategory.name }}</h3>
+                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{topCategory.seats }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Top Client</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ topClient.name }}</h3>
+                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{topClient.seats }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Top Salesperson</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ topSalesperson.name }}</h3>
+                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{topSalesperson.seats }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="row">
+                <div class="col-12 col-md-5">
+                  <div id="chart">
+                    <apexchart type="donut" :options="donutSalespeople.chartOptions" :series="donutSalespeople.series">
+                    </apexchart>
+                  </div>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-12 col-md-5">
+                  <div id="chart">
+                    <apexchart type="donut" :options="donutSeatCategory.chartOptions"
+                      :series="donutSeatCategory.series">
+                    </apexchart>
+                  </div>
+                </div>
+              </div>
+            </div>
             <v-data-table :headers="headers" :items="summarizedData" class="elevation-1" @click:row="openModal">
               <template v-slot:top>
                 <v-toolbar flat>
                   <v-toolbar-title>Sales Summary</v-toolbar-title>
                   <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-toolbar-title>{{ totalSeatsWon }} Seats Won</v-toolbar-title>
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <p>{{ totalNewWon }} New Seats</p>
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <p>{{ totalAdditionalWon }} Additions</p>
-                  <v-divider class="mx-4" inset vertical></v-divider>
-                  <p>{{ totalReplacementWon }} Replacements</p>
                 </v-toolbar>
               </template>
             </v-data-table>
@@ -88,6 +169,18 @@ export default {
       totalAdditionalWon: 0,
       totalNewWon: 0,
       totalReplacementWon: 0,
+      topSalesperson: {
+        name: "",
+        seats: 0
+      },
+      topCategory: {
+        name: "",
+        seats: 0
+      },
+      topClient: {
+        name: "",
+        seats: 0
+      },
       headers: [
         { text: "Salesperson", value: "salesPerson" },
         { text: "Total Seats Won", value: "totalSeats" },
@@ -111,7 +204,59 @@ export default {
       summarizedData: [],
       isModalOpen: false,
       selectedSalesPerson: {},
-      filteredSalesData: []
+      filteredSalesData: [],
+      donutSalespeople: {
+        series: [],
+        chartOptions: {
+          chart: {
+            type: 'donut'
+          },
+          labels: [],
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }],
+          legend: {
+            position: 'right',
+            formatter: function (seriesName, opts) {
+              return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
+            }
+          }
+        }
+      },
+      donutSeatCategory: {
+        series: [],
+        chartOptions: {
+          chart: {
+            type: 'donut'
+          },
+          labels: [],
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 300
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }],
+          legend: {
+            position: 'right',
+            formatter: function (seriesName, opts) {
+              return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
+            }
+          }
+        }
+      }
     };
   },
   watch: {
@@ -212,6 +357,9 @@ export default {
         .filter(item => item.totalSeats > 0)
         .sort((a, b) => b.totalSeats - a.totalSeats);
 
+      this.topSalesperson.name = this.summarizedData[0].salesPerson;
+      this.topSalesperson.seats = this.summarizedData[0].totalSeats;
+
       this.totalSeatsWon = this.summarizedData.reduce(
         (sum, entry) => sum + entry.totalSeats,
         0
@@ -230,10 +378,74 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory = 'SDDS' ? 'Dental' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
       }));
 
       this.isModalOpen = true;
+    },
+    dataToDonut(data) {
+      let salespersons = [];
+      let totalSeats = [];
+
+      data.forEach(value => {
+        salespersons.push(value.salesPerson);
+        totalSeats.push(value.totalSeats);
+      });
+
+      this.donutSalespeople.chartOptions.labels = salespersons;
+      this.donutSalespeople.series = totalSeats;
+    },
+
+    groupSeatCategoryBySeatCount(data) {
+      let groupedData = {};
+      this.donutSeatCategory.chartOptions.labels = [];
+      this.donutSeatCategory.series = [];
+
+      data.forEach(item => {
+        let { seatCategory, seatCount } = item;
+        if (groupedData[seatCategory]) {
+          groupedData[seatCategory] += seatCount;
+        } else {
+          groupedData[seatCategory] = seatCount;
+        }
+      });
+
+      let result = Object.keys(groupedData).map(category => ({
+        seatCategory: category,
+        totalSeats: groupedData[category]
+      }));
+
+      result.forEach(value => {
+        this.donutSeatCategory.chartOptions.labels.push(value.seatCategory);
+        this.donutSeatCategory.series.push(value.totalSeats);
+      });
+      result.sort((a, b) => b.totalSeats - a.totalSeats);
+      this.topCategory.name = result[0].seatCategory;
+      this.topCategory.seats = result[0].totalSeats;
+    },
+    getCompanyWithHighestSeats(data) {
+      let seatCounts = {};
+      data.forEach(item => {
+        let { company, seatCount } = item;
+        if (seatCounts[company]) {
+          seatCounts[company] += seatCount;
+        } else {
+          seatCounts[company] = seatCount;
+        }
+      });
+
+      let maxSeats = 0;
+      let topCompany = "";
+
+      for (let company in seatCounts) {
+        if (seatCounts[company] > maxSeats) {
+          maxSeats = seatCounts[company];
+          topCompany = company;
+        }
+      }
+
+      this.topClient.name = topCompany;
+      this.topClient.seats = maxSeats;
     },
     generateReport(date) {
       this.loading = true;
@@ -241,7 +453,10 @@ export default {
       let year = this.getYearFromString(date);
       let data = this.filterByClosedMonthYear(this.allOpportunites, month, year);
       this.monthlyReport = this.filterBySeatCount(data);
+      this.getCompanyWithHighestSeats(this.monthlyReport)
       this.summarizeData(this.monthlyReport);
+      this.groupSeatCategoryBySeatCount(this.monthlyReport);
+      this.dataToDonut(this.summarizedData);
       this.loading = false;
     }
   },

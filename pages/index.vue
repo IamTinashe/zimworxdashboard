@@ -639,7 +639,7 @@ export default {
 
     getTopTenClients(clients) {
       clients.sort((a, b) => b.totalSeats - a.totalSeats);
-      let top10Clients = clients; //.slice(0, 10);
+      let top10Clients = clients.slice(0, 10);
       top10Clients.forEach(client => {
         client.revenue = `$${Math.ceil(client.revenue)}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         client.tenure = this.formatDaysToYearsMonthsDays(client.tenure);

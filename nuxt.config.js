@@ -55,7 +55,10 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [`~/plugins/dashboard-plugin.js`],
+  plugins: [
+    `~/plugins/dashboard-plugin.js`,
+    { src: '~/plugins/apexcharts.js', mode: 'client' }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
