@@ -37,6 +37,7 @@ module.exports = {
     "widgets": "Widgets",
     "charts": "Charts",
     "calendar": "Calendar",
-    "supportDDS": "Support DDS"
+    "supportDDS": "Support DDS",
+    "salesdata": "Sales Data"
   }
 }

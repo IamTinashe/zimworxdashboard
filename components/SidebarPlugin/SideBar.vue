@@ -10,7 +10,7 @@
         </a>
       </div>
       <slot></slot>
-      <!--<ul class="nav">
+      <ul class="nav">
         <slot name="links">
           <sidebar-item
             v-for="(link, index) in sidebarLinks"
@@ -19,7 +19,7 @@
           >
           </sidebar-item>
         </slot>
-      </ul>-->
+      </ul>
     </div>
   </div>
 </template>

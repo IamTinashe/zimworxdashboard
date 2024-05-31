@@ -17,6 +17,14 @@
         </sidebar-item>
         <sidebar-item
           :link="{
+            name: $t('sidebar.salesdata'),
+            icon: 'tim-icons icon-atom',
+            path: '/salesdata'
+          }"
+        >
+        </sidebar-item>
+        <!--<sidebar-item
+          :link="{
             name: $t('sidebar.supportDDS'),
             icon: 'tim-icons icon-atom',
             path: '/supportdds'
@@ -85,7 +93,7 @@
             <i class="tim-icons icon-spaceship"></i>
             <p>Upgrade to PRO</p>
           </a>
-        </li>
+        </li> -->
       </template>
     </side-bar>
     <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->

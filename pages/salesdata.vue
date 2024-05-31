@@ -71,7 +71,7 @@
 import statistics from "../assets/js/data.js";
 
 export default {
-  name: "lead-opportunities",
+  name: "sales-data",
   data() {
     return {
       defaultColor: '#42b883',
