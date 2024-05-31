@@ -5,8 +5,26 @@
     </div>
     <div class="row" v-else>
       <div class="col-12">
-        <div class="card">
-          <v-date-picker v-model="date" :allowed-dates="allowedDates" class="mt-4" :min="minDate" :max="maxDate" />
+        <div>
+          <div class="row">
+            <div class="col-md-10"></div>
+            <div class="col-md-2 col-12">
+              <v-btn :color="defaultColor" class="mb-0" @click="dialog = true">Select Month</v-btn>
+              <v-dialog v-model="dialog" max-width="300" class="elevation-1 mt-0">
+                <v-card>
+                  <v-card-title class="headline">Select a Month</v-card-title>
+                  <v-card-text>
+                    <v-date-picker v-model="date" :allowed-dates="allowedDates" :min="minDate" :max="maxDate"
+                      class="mt-4" type="month" />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn :color="defaultColor" @click="dialog = false">OK</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-12">
@@ -17,11 +35,11 @@
                   <v-divider class="mx-4" inset vertical></v-divider>
                   <v-toolbar-title>{{ totalSeatsWon }} Seats Won</v-toolbar-title>
                   <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-typography>{{ totalNewWon }} New Seats</v-typography>
+                  <p>{{ totalNewWon }} New Seats</p>
                   <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-typography>{{ totalAdditionalWon }} Additions</v-typography>
+                  <p>{{ totalAdditionalWon }} Additions</p>
                   <v-divider class="mx-4" inset vertical></v-divider>
-                  <v-typography>{{ totalReplacementWon }} Replacements</v-typography>
+                  <p>{{ totalReplacementWon }} Replacements</p>
                 </v-toolbar>
               </template>
             </v-data-table>
@@ -31,7 +49,8 @@
                   <span class="headline">{{ selectedSalesPerson.salesPerson }}</span>
                 </v-card-title>
                 <v-card-text>
-                  <v-data-table :headers="modalHeaders" :items="filteredSalesData" @click:row="openOpportunity" class="elevation-1"></v-data-table>
+                  <v-data-table :headers="modalHeaders" :items="filteredSalesData" @click:row="openOpportunity"
+                    class="elevation-1"></v-data-table>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -55,7 +74,9 @@ export default {
   name: "lead-opportunities",
   data() {
     return {
-      minDate: "2021-01-01",
+      defaultColor: '#42b883',
+      dialog: false,
+      minDate: "2021-01",
       maxDate: this.getFormattedDate(),
       date: this.getFormattedDate(),
       loading: true,
@@ -68,22 +89,22 @@ export default {
       headers: [
         { text: "Salesperson", value: "salesPerson" },
         { text: "Total Seats Won", value: "totalSeats" },
+        { text: "New Seats", value: "newSeats" },
         { text: "Additional Seats", value: "additionalSeats" },
         { text: "Replacement Seats", value: "replacementSeats" },
-        { text: "New Seats", value: "newSeats" },
         { text: "Prospective Clients", value: "prospectiveClients" },
       ],
       modalHeaders: [
         { text: "Company", value: "company" },
-        { text: "Seat Category", value: "seatCategory" },
-        { text: "Days To Close", value: "totalTimeToClose" },
+        { text: "Category", value: "seatCategory" },
+        { text: "Seats", value: "seatCount" },
         { text: "Industry", value: "industryType" },
         { text: "Practice Type", value: "practiceType" },
         { text: "Source", value: "source" },
         { text: "Seat Type", value: "seatType" },
-        { text: "Seat Count", value: "seatCount" },
         { text: "Client Type", value: "clientType" },
-        { text: "Won Date", value: "closedDate" },
+        { text: "Days To Close", value: "totalTimeToClose" },
+        { text: "Start Date", value: "startDate" },
       ],
       summarizedData: [],
       isModalOpen: false,
@@ -97,7 +118,7 @@ export default {
     }
   },
   methods: {
-    allowedDates: val => parseInt(val.split("-")[2], 10) % 2 === 0,
+    allowedDates: val => true,
     getFormattedDate() {
       const now = new Date();
       const year = now.getFullYear();
@@ -117,9 +138,9 @@ export default {
     },
     filterByClosedMonthYear(data, month, year) {
       return data.filter(item => {
-        if (item.closedDate) {
-          let closedDate = new Date(item.closedDate * 1000);
-          return closedDate.getMonth() === month && closedDate.getFullYear() === year;
+        if (item.startDate && item.closedDate) {
+          let startDate = new Date(item.startDate * 1000);
+          return startDate.getMonth() === month && startDate.getFullYear() === year;
         }
         return false;
       });
@@ -129,7 +150,7 @@ export default {
       const month = parseInt(parts[1], 10);
       return month - 1;
     },
-    openOpportunity:(item)=>{
+    openOpportunity: (item) => {
       const url = `https://zimworx.odoo.com/web?#id=${item.id}&menu_id=255&cids=2&action=380&model=crm.lead&view_type=form`;
       window.open(url, '_blank');
     },
@@ -162,15 +183,12 @@ export default {
             prospectiveClients: 0
           };
         }
+
         summary[salesperson].totalSeats += entry.seatCount;
-        this.totalSeatsWon = salesData.reduce(
-          (sum, entry) => sum + entry.seatCount,
-          0
-        );
+
 
         if (entry.seatType === "Additional Seats") {
           summary[salesperson].additionalSeats += entry.seatCount;
-          this.totalAdditionalWon += entry.seatCount;
         } else if (entry.seatType === "Replacement Seats") {
           summary[salesperson].replacementSeats += entry.seatCount;
           this.totalReplacementWon += entry.seatCount;
@@ -185,8 +203,21 @@ export default {
       });
 
       this.summarizedData = Object.values(summary)
+        .map(item => {
+          item.totalSeats = item.totalSeats - item.replacementSeats;
+          return item;
+        })
         .filter(item => item.totalSeats > 0)
         .sort((a, b) => b.totalSeats - a.totalSeats);
+
+      this.totalSeatsWon = this.summarizedData.reduce(
+        (sum, entry) => sum + entry.totalSeats,
+        0
+      );
+      this.totalAdditionalWon = this.summarizedData.reduce(
+        (sum, entry) => sum + entry.additionalSeats,
+        0
+      );
     },
     openModal(item) {
       this.selectedSalesPerson = item;
@@ -195,7 +226,9 @@ export default {
       );
       this.filteredSalesData = this.filteredSalesData.map(item => ({
         ...item,
-        closedDate: this.dateConvertor(item.closedDate)
+        closedDate: this.dateConvertor(item.closedDate),
+        startDate: this.dateConvertor(item.startDate),
+        seatCategory: item.seatCategory = 'SDDS' ? 'Dental' : item.seatCategory
       }));
 
       this.isModalOpen = true;
