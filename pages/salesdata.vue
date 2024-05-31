@@ -76,16 +76,7 @@
                     <slot name="header">
                       <h4 class="card-title text-center">Top Category</h4>
                       <h3 class="card-title text-center py-0 my-0">{{ topCategory.name }}</h3>
-                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{topCategory.seats }} Seats</h3>
-                    </slot>
-                  </div>
-                </div>
-                <div class="col-12 col-md-4">
-                  <div class="card-header headerClasses">
-                    <slot name="header">
-                      <h4 class="card-title text-center">Top Client</h4>
-                      <h3 class="card-title text-center py-0 my-0">{{ topClient.name }}</h3>
-                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{topClient.seats }} Seats</h3>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{topCategory.seats }} Seats</h4>
                     </slot>
                   </div>
                 </div>
@@ -94,7 +85,16 @@
                     <slot name="header">
                       <h4 class="card-title text-center">Top Salesperson</h4>
                       <h3 class="card-title text-center py-0 my-0">{{ topSalesperson.name }}</h3>
-                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{topSalesperson.seats }} Seats</h3>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{topSalesperson.seats }} Seats</h4>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Top Client</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ topClient.name }}</h3>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{topClient.seats }} Seats</h4>
                     </slot>
                   </div>
                 </div>
@@ -414,12 +414,12 @@ export default {
         seatCategory: category,
         totalSeats: groupedData[category]
       }));
+      result.sort((a, b) => b.totalSeats - a.totalSeats);
 
       result.forEach(value => {
         this.donutSeatCategory.chartOptions.labels.push(value.seatCategory);
         this.donutSeatCategory.series.push(value.totalSeats);
       });
-      result.sort((a, b) => b.totalSeats - a.totalSeats);
       this.topCategory.name = result[0].seatCategory;
       this.topCategory.seats = result[0].totalSeats;
     },
