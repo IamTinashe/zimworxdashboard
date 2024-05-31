@@ -1,290 +1,298 @@
 <template>
-  <div class="row">
-    <!-- Big Chart -->
-    <div class="col-12 col-md-12">
-      <div class="row" v-if="!loading">
-        <div class="col-12 col-md-12">
-          <scorecardnumbers :date="date" :allreports="fetchedData" v-if="fetchedData" />
-        </div>
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center vh-100" v-if="loading">
+      <div class="col-12 text-center">
+        <img src="/infinite-spinner.svg" style="width: 70%;" />
       </div>
-      <div class="row" v-if="!loading && monthlyReport">
-        <div class="col-12 col-md-6">
-          <div class="card">
-            <div class="row">
-              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title text-center">WARM Opportunities</h4>
-                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].warmLeads }}
-                    </h3>
-                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
-        monthlyReport[monthlyReport.length - 1].warmSeats }} Seats</h3>
-                  </slot>
-                </div>
-              </div>
-              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title text-center">MILD Opportunities</h4>
-                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].mildLeads }}
-                    </h3>
-                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
-        monthlyReport[monthlyReport.length - 1].mildSeats }} Seats</h3>
-                  </slot>
-                </div>
-              </div>
-              <div class="col-12 col-md-4">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title text-center">HOT Opportunities</h4>
-                    <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].hotLeads }}
-                    </h3>
-                    <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
-        monthlyReport[monthlyReport.length - 1].hotSeats }} Seats</h3>
-                  </slot>
-                </div>
-              </div>
-            </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-12">
+        <div class="row" v-if="!loading">
+          <div class="col-12 col-md-12">
+            <scorecardnumbers :date="date" :allreports="fetchedData" v-if="fetchedData" />
           </div>
         </div>
-        <div class="col-12 col-md-6">
-          <div class="card text-center">
-            <div class="row pb-4">
-              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title">MTD Seats Won</h4>
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].seatedThisMonth }}</h3>
-                  </slot>
-                </div>
-              </div>
-              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title">MTD Seats Lost</h4>
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].lostSeatsThisMonth }}</h3>
-                  </slot>
-                </div>
-              </div>
-              <div class="col-12 col-md-4">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title">MTD Gained Seats</h4>
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].seatedThisMonth -
-        monthlyReport[monthlyReport.length - 1].lostSeatsThisMonth }}</h3>
-                  </slot>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 col-md-8">
-          <card type="chart">
-            <template slot="header">
+        <div class="row" v-if="!loading && monthlyReport">
+          <div class="col-12 col-md-6">
+            <div class="card">
               <div class="row">
-                <div class="col-12 col-md-6">
-                  <h5 class="card-category">Seat and Revenue Stats</h5>
-                  <h2 class="card-title">Growth Rate</h2>
+                <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">WARM Opportunities</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].warmLeads
+                        }}
+                      </h3>
+                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
+      monthlyReport[monthlyReport.length - 1].warmSeats }} Seats</h3>
+                    </slot>
+                  </div>
                 </div>
-                <div class="col-12 col-md-6 d-flex d-sm-block">
-                  <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                    <label v-for="(option, index) in bigLineChartCategories" :key="option.name"
-                      class="btn btn-sm btn-primary btn-simple" :class="{ active: bigLineChart.activeIndex === index }"
-                      :id="index" @click="initBigChart(index)">
-                      <input type="radio" name="options" autocomplete="off"
-                        :checked="bigLineChart.activeIndex === index" />
-                      <span class="d-none d-sm-block">{{ option.name }}</span>
-                      <span class="d-block d-sm-none">
-                        <i :class="option.icon"></i>
-                      </span>
-                    </label>
+                <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">MILD Opportunities</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].mildLeads
+                        }}
+                      </h3>
+                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
+      monthlyReport[monthlyReport.length - 1].mildSeats }} Seats</h3>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">HOT Opportunities</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ monthlyReport[monthlyReport.length - 1].hotLeads
+                        }}
+                      </h3>
+                      <h3 class="card-category text-center mt-0 pt-0 pb-3 color-black">{{
+      monthlyReport[monthlyReport.length - 1].hotSeats }} Seats</h3>
+                    </slot>
                   </div>
                 </div>
               </div>
-            </template>
-            <div class="chart-area">
-              <line-chart style="height: 100%" ref="bigChart" :chart-data="bigLineChart.chartData"
-                :gradient-colors="bigLineChart.gradientColors" :gradient-stops="bigLineChart.gradientStops"
-                :extra-options="bigLineChart.extraOptions">
-              </line-chart>
-            </div>
-          </card>
-
-          <div class="row">
-            <div class="col-12 col-md-12">
-              <card type="chart" v-if="!loading">
-                <template slot="header">
-                  <h5 class="card-category">This Month Seats</h5>
-                  <h3 class="card-title">
-                    <i class="tim-icons icon-bell-55 text-primary "></i>
-                    {{ thisMonthData[thisMonthData.length - 1].seatedThisMonth }}
-                    Seats<span style="float: right; font-size: 15px;">MTD Seats By Type</span>
-                  </h3>
-                </template>
-                <div class="row">
-                  <div class="col-12 col-md-10">
-
-                    <div class="chart-area">
-                      <line-chart style="height: 100%" :chart-data="purpleLineChart.chartData"
-                        :gradient-colors="purpleLineChart.gradientColors"
-                        :gradient-stops="purpleLineChart.gradientStops" :extra-options="purpleLineChart.extraOptions">
-                      </line-chart>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-2">
-                    <div class="row mb-4" v-for="(item, index) in byType">
-                      <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
-                      <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
-                    </div>
-                  </div>
-                </div>
-              </card>
             </div>
           </div>
-          <div class="row">
-            <div class="col-12 col-md-12">
-              <card type="chart" v-if="!loading">
-                <template slot="header">
-                  <h5 class="card-category">This Month Seats</h5>
-                  <h3 class="card-title">
-                    <i class="tim-icons icon-bell-55 text-primary "></i> MTD Seats By Categories
-                  </h3>
-                </template>
-                <div class="row">
-                  <div class="col-12 col-md-10">
-                    <div class="chart-area">
-                      <line-chart style="height: 100%" :chart-data="greenLineChart.chartData"
-                        :gradient-colors="greenLineChart.gradientColors" :gradient-stops="greenLineChart.gradientStops"
-                        :extra-options="greenLineChart.extraOptions">
-                      </line-chart>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-2">
-                    <div class="row mb-3" v-for="(item, index) in byCategory">
-                      <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
-                      <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
-                    </div>
+          <div class="col-12 col-md-6">
+            <div class="card text-center">
+              <div class="row pb-4">
+                <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title">MTD Seats Won</h4>
+                      <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].seatedThisMonth }}</h3>
+                    </slot>
                   </div>
                 </div>
-              </card>
+                <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title">MTD Seats Lost</h4>
+                      <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].lostSeatsThisMonth }}</h3>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title">MTD Gained Seats</h4>
+                      <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].seatedThisMonth -
+      monthlyReport[monthlyReport.length - 1].lostSeatsThisMonth }}</h3>
+                    </slot>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-4">
-          <div class="card text-center" v-if="!loading">
+        <div class="row">
+          <div class="col-12 col-md-8">
+            <card type="chart">
+              <template slot="header">
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <h5 class="card-category">Seat and Revenue Stats</h5>
+                    <h2 class="card-title">Growth Rate</h2>
+                  </div>
+                  <div class="col-12 col-md-6 d-flex d-sm-block">
+                    <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                      <label v-for="(option, index) in bigLineChartCategories" :key="option.name"
+                        class="btn btn-sm btn-primary btn-simple"
+                        :class="{ active: bigLineChart.activeIndex === index }" :id="index"
+                        @click="initBigChart(index)">
+                        <input type="radio" name="options" autocomplete="off"
+                          :checked="bigLineChart.activeIndex === index" />
+                        <span class="d-none d-sm-block">{{ option.name }}</span>
+                        <span class="d-block d-sm-none">
+                          <i :class="option.icon"></i>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <div class="chart-area">
+                <line-chart style="height: 100%" ref="bigChart" :chart-data="bigLineChart.chartData"
+                  :gradient-colors="bigLineChart.gradientColors" :gradient-stops="bigLineChart.gradientStops"
+                  :extra-options="bigLineChart.extraOptions">
+                </line-chart>
+              </div>
+            </card>
+
             <div class="row">
-              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title">Zimbabwe</h4>
-                    <img src="/zimbabwe.png" style="width: 20px; margin-bottom: 5px;" />
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].zimbabweSeats }}</h3>
-                  </slot>
-                </div>
-              </div>
-              <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title">Costa Rica</h4>
-                    <img src="/costa-rica.png" style="width: 20px; margin-bottom: 5px;" />
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].costaRicaSeats }}</h3>
-                  </slot>
-                </div>
-              </div>
-              <div class="col-12 col-md-4">
-                <div class="card-header headerClasses">
-                  <slot name="header">
-                    <h4 class="card-title">Zambia</h4>
-                    <img src="/zambia.png" style="width: 20px; margin-bottom: 5px;" />
-                    <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].zambiaSeats }}</h3>
-                  </slot>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <h3 class="card-title p-4" style="font-weight: 100;">
-              Seats By Industry
-            </h3>
-            <industry-pie-chart :data="activeClientList" v-if="!loading" />
-          </div>
-          <div class="card">
-            <h3 class="card-title p-4" style="font-weight: 100;">
-              {{ dsoData[1] }} DSOs
-              <span style="float: right; font-size: 15px;">DSOs vs Single</span>
-            </h3>
-            <dso-pie-chart :data="dsoData" v-if="!loading" />
-          </div>
-        </div>
-      </div>
+              <div class="col-12 col-md-12">
+                <card type="chart" v-if="!loading">
+                  <template slot="header">
+                    <h5 class="card-category">This Month Seats</h5>
+                    <h3 class="card-title">
+                      <i class="tim-icons icon-bell-55 text-primary "></i>
+                      {{ thisMonthData[thisMonthData.length - 1].seatedThisMonth }}
+                      Seats<span style="float: right; font-size: 15px;">MTD Seats By Type</span>
+                    </h3>
+                  </template>
+                  <div class="row">
+                    <div class="col-12 col-md-10">
 
-      <div class="row">
-        <div class="col-12 col-md-4" v-if="!loading">
-          <card type="chart">
-            <template slot="header">
-              <h3 class="card-title">
-                Seats By Salesperson
-              </h3>
-            </template>
-            <div class="chart-area">
-              <bar-chart style="height: 100%" :chart-data="blueBarChart.chartData"
-                :gradient-stops="blueBarChart.gradientStops" :extra-options="blueBarChart.extraOptions">
-              </bar-chart>
+                      <div class="chart-area">
+                        <line-chart style="height: 100%" :chart-data="purpleLineChart.chartData"
+                          :gradient-colors="purpleLineChart.gradientColors"
+                          :gradient-stops="purpleLineChart.gradientStops" :extra-options="purpleLineChart.extraOptions">
+                        </line-chart>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <div class="row mb-4" v-for="(item, index) in byType">
+                        <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
+                        <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </card>
+              </div>
             </div>
-          </card>
-          <card type="chart">
-            <template slot="header">
-              <h3 class="card-title">
-                Revenue By Salesperson
-              </h3>
-            </template>
-            <div class="chart-area">
-              <bar-chart style="height: 100%" :chart-data="purpleBarChart.chartData"
-                :gradient-stops="purpleBarChart.gradientStops" :extra-options="purpleBarChart.extraOptions">
-              </bar-chart>
+            <div class="row">
+              <div class="col-12 col-md-12">
+                <card type="chart" v-if="!loading">
+                  <template slot="header">
+                    <h5 class="card-category">This Month Seats</h5>
+                    <h3 class="card-title">
+                      <i class="tim-icons icon-bell-55 text-primary "></i> MTD Seats By Categories
+                    </h3>
+                  </template>
+                  <div class="row">
+                    <div class="col-12 col-md-10">
+                      <div class="chart-area">
+                        <line-chart style="height: 100%" :chart-data="greenLineChart.chartData"
+                          :gradient-colors="greenLineChart.gradientColors"
+                          :gradient-stops="greenLineChart.gradientStops" :extra-options="greenLineChart.extraOptions">
+                        </line-chart>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <div class="row mb-3" v-for="(item, index) in byCategory">
+                        <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
+                        <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </card>
+              </div>
             </div>
-          </card>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card text-center" v-if="!loading">
+              <div class="row">
+                <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title">Zimbabwe</h4>
+                      <img src="/zimbabwe.png" style="width: 20px; margin-bottom: 5px;" />
+                      <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].zimbabweSeats }}</h3>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title">Costa Rica</h4>
+                      <img src="/costa-rica.png" style="width: 20px; margin-bottom: 5px;" />
+                      <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].costaRicaSeats }}</h3>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title">Zambia</h4>
+                      <img src="/zambia.png" style="width: 20px; margin-bottom: 5px;" />
+                      <h3 class="card-title">{{ monthlyReport[monthlyReport.length - 1].zambiaSeats }}</h3>
+                    </slot>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <h3 class="card-title p-4" style="font-weight: 100;">
+                Seats By Industry
+              </h3>
+              <industry-pie-chart :data="activeClientList" v-if="!loading" />
+            </div>
+            <div class="card">
+              <h3 class="card-title p-4" style="font-weight: 100;">
+                {{ dsoData[1] }} DSOs
+                <span style="float: right; font-size: 15px;">DSOs vs Single</span>
+              </h3>
+              <dso-pie-chart :data="dsoData" v-if="!loading" />
+            </div>
+          </div>
         </div>
-        <div class="col-12 col-md-8">
-          <card card-body-classes="table-full-width">
-            <h4 slot="header" class="card-title">Salespersons</h4>
-            <el-table :data="salespersonSummary">
-              <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
-              <el-table-column min-width="100" sortable label="Total Seats" property="totalSeats"></el-table-column>
-              <el-table-column max-width="50" sortable label="Clients" property="totalClients"></el-table-column>
-              <el-table-column max-width="20" sortable label="Goal" property="goal"></el-table-column>
-              <el-table-column max-width="30" sortable label="Forecast" property="forecast"></el-table-column>
-              <el-table-column max-width="20" sortable align="right" header-align="right" label="Won"
-                property="won"></el-table-column>
-            </el-table>
-          </card>
-        </div>
-      </div>
 
-      <div class="row" v-if="!loading">
-        <div class="col-12 col-md-12">
-          <card card-body-classes="table-full-width">
-            <h4 slot="header" class="card-title">Top 10 Clients</h4>
-            <el-table :data="tableData">
-              <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
-              <el-table-column min-width="150" sortable label="Salesperson" property="salesperson"></el-table-column>
-              <el-table-column min-width="150" sortable label="CSP" property="csp"></el-table-column>
-              <el-table-column min-width="150" sortable label="Industry" property="industry"></el-table-column>
-              <el-table-column min-width="100" sortable label="Locations"
-                property="numberOfLocations"></el-table-column>
-              <el-table-column max-width="50" sortable label="Tenure" property="tenure"></el-table-column>
-              <el-table-column max-width="50" sortable label="Seats" property="totalSeats"></el-table-column>
-              <el-table-column max-width="50" sortable align="right" header-align="right" label="Revenue"
-                property="revenue"></el-table-column>
-            </el-table>
-          </card>
+        <div class="row">
+          <div class="col-12 col-md-4" v-if="!loading">
+            <card type="chart">
+              <template slot="header">
+                <h3 class="card-title">
+                  Seats By Salesperson
+                </h3>
+              </template>
+              <div class="chart-area">
+                <bar-chart style="height: 100%" :chart-data="blueBarChart.chartData"
+                  :gradient-stops="blueBarChart.gradientStops" :extra-options="blueBarChart.extraOptions">
+                </bar-chart>
+              </div>
+            </card>
+            <card type="chart">
+              <template slot="header">
+                <h3 class="card-title">
+                  Revenue By Salesperson
+                </h3>
+              </template>
+              <div class="chart-area">
+                <bar-chart style="height: 100%" :chart-data="purpleBarChart.chartData"
+                  :gradient-stops="purpleBarChart.gradientStops" :extra-options="purpleBarChart.extraOptions">
+                </bar-chart>
+              </div>
+            </card>
+          </div>
+          <div class="col-12 col-md-8">
+            <card card-body-classes="table-full-width">
+              <h4 slot="header" class="card-title">Salespersons</h4>
+              <el-table :data="salespersonSummary">
+                <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
+                <el-table-column min-width="100" sortable label="Total Seats" property="totalSeats"></el-table-column>
+                <el-table-column max-width="50" sortable label="Clients" property="totalClients"></el-table-column>
+                <el-table-column max-width="20" sortable label="Goal" property="goal"></el-table-column>
+                <el-table-column max-width="30" sortable label="Forecast" property="forecast"></el-table-column>
+                <el-table-column max-width="20" sortable align="right" header-align="right" label="Won"
+                  property="won"></el-table-column>
+              </el-table>
+            </card>
+          </div>
+        </div>
+
+        <div class="row" v-if="!loading">
+          <div class="col-12 col-md-12">
+            <card card-body-classes="table-full-width">
+              <h4 slot="header" class="card-title">Top 10 Clients</h4>
+              <el-table :data="tableData">
+                <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
+                <el-table-column min-width="150" sortable label="Salesperson" property="salesperson"></el-table-column>
+                <el-table-column min-width="150" sortable label="CSP" property="csp"></el-table-column>
+                <el-table-column min-width="150" sortable label="Industry" property="industry"></el-table-column>
+                <el-table-column min-width="100" sortable label="Locations"
+                  property="numberOfLocations"></el-table-column>
+                <el-table-column max-width="50" sortable label="Tenure" property="tenure"></el-table-column>
+                <el-table-column max-width="50" sortable label="Seats" property="totalSeats"></el-table-column>
+                <el-table-column max-width="50" sortable align="right" header-align="right" label="Revenue"
+                  property="revenue"></el-table-column>
+              </el-table>
+            </card>
+          </div>
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 <script>
@@ -687,9 +695,9 @@ export default {
 
       // Remaining days
       const days = remainingDays;
-      if(years> 0){
+      if (years > 0) {
         return `${years} years, ${months} months, ${days} days`;
-      }else{
+      } else {
         return `${months} months, ${days} days`;
       }
     }

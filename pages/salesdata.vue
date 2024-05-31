@@ -1,7 +1,9 @@
 <template>
   <div class="container-fluid">
-    <div class="row" v-if="loading">
-      <img src="/infinite-spinner.svg" />
+    <div class="row justify-content-center align-items-center vh-100" v-if="loading">
+      <div class="col-12 text-center">
+        <img src="/infinite-spinner.svg" style="width: 70%;" />
+      </div>
     </div>
     <div class="row" v-else>
       <div class="col-12">
@@ -71,7 +73,7 @@
 import statistics from "../assets/js/data.js";
 
 export default {
-  name: "sales-data",
+  name: "salesdata",
   data() {
     return {
       defaultColor: '#42b883',
