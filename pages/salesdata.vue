@@ -76,7 +76,16 @@
             </div>
             <div class="card pb-3">
               <div class="row">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
+                  <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Top Industry</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ topIndustry.name }}</h3>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{ topIndustry.seats }} Seats</h4>
+                    </slot>
+                  </div>
+                </div>
+                <div class="col-12 col-md-3">
                   <div class="card-header headerClasses">
                     <slot name="header">
                       <h4 class="card-title text-center">Top Category</h4>
@@ -85,7 +94,7 @@
                     </slot>
                   </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                   <div class="card-header headerClasses">
                     <slot name="header">
                       <h4 class="card-title text-center">Top Salesperson</h4>
@@ -95,7 +104,7 @@
                     </slot>
                   </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                   <div class="card-header headerClasses">
                     <slot name="header">
                       <h4 class="card-title text-center">Top Client</h4>
@@ -106,18 +115,26 @@
                 </div>
               </div>
             </div>
-            <div class="card py-5">
+            <div class="card text-center py-5">
               <div class="row">
-                <div class="col-12 col-md-5">
+                <div class="col-12 col-md-4">
+                  <h3 class="card-title">Seats By Salespeople</h3>
                   <div id="chart">
                     <apexchart type="donut" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions" :series="donutSalespeople.series">
                     </apexchart>
                   </div>
                 </div>
-                <div class="col-md-2"></div>
-                <div class="col-12 col-md-5">
+                <div class="col-12 col-md-4">
+                  <h3 class="card-title">Seats By Category</h3>
                   <div id="chart">
                     <apexchart type="donut" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series">
+                    </apexchart>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <h3 class="card-title">Seats By Industry</h3>
+                  <div id="chart">
+                    <apexchart type="donut" ref="apexChartIndustryType" :options="donutIndustryType.chartOptions" :series="donutIndustryType.series">
                     </apexchart>
                   </div>
                 </div>
@@ -193,6 +210,10 @@ export default {
         seats: 0
       },
       topClient: {
+        name: "",
+        seats: 0
+      },
+      topIndustry: {
         name: "",
         seats: 0
       },
@@ -272,6 +293,33 @@ export default {
             }
           }
         }
+      },
+      donutIndustryType: {
+        series: [],
+        chartOptions: {
+          chart: {
+            type: 'donut'
+          },
+          labels: [],
+          colors: [ '#DA70D6', '#87CEEB', '#FF8C00', '#00FF00', '#33FF99', '#9966CC', '#00CED1', '#FF6347', '#FF69B4', '#8A2BE2', '#20B2AA', '#FFA07A'],
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 300
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }],
+          legend: {
+            position: 'bottom',
+            formatter: function (seriesName, opts) {
+              return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
+            }
+          }
+        }
       }
     };
   },
@@ -297,7 +345,16 @@ export default {
         }
       },
       deep: true
-    }
+    },
+    'donutIndustryType.series': {
+      handler(newSeries) {
+        if (this.$refs.apexChartIndustryType) {
+          this.$refs.apexChartIndustryType.updateSeries(newSeries);
+          this.$refs.apexChartIndustryType.updateOptions({ labels: this.donutIndustryType.chartOptions.labels });
+        }
+      },
+      deep: true
+    },
   },
   methods: {
     allowedDates: val => true,
@@ -467,6 +524,36 @@ export default {
       this.topCategory.name = result[0].seatCategory;
       this.topCategory.seats = result[0].totalSeats;
     },
+
+    groupSeatIndustryBySeatCount(data) {
+      let groupedData = {};
+      this.donutIndustryType.chartOptions.labels = [];
+      this.donutIndustryType.series = [];
+
+      data.forEach(item => {
+        let { industryType, seatCount } = item;
+        if (groupedData[industryType]) {
+          groupedData[industryType] += seatCount;
+        } else {
+          groupedData[industryType] = seatCount;
+        }
+      });
+
+      console.log(groupedData)
+
+      let result = Object.keys(groupedData).map(category => ({
+        IndustryType: category,
+        totalSeats: groupedData[category]
+      }));
+      result.sort((a, b) => b.totalSeats - a.totalSeats);
+
+      result.forEach(value => {
+        this.donutIndustryType.chartOptions.labels.push(value.IndustryType);
+        this.donutIndustryType.series.push(value.totalSeats);
+      });
+      this.topIndustry.name = result[0].IndustryType;
+      this.topIndustry.seats = result[0].totalSeats;
+    },
     getCompanyWithHighestSeats(data) {
       let seatCounts = {};
       data.forEach(item => {
@@ -502,6 +589,7 @@ export default {
         this.getCompanyWithHighestSeats(this.monthlyReport)
         this.summarizeData(this.monthlyReport);
         this.groupSeatCategoryBySeatCount(this.monthlyReport);
+        this.groupSeatIndustryBySeatCount(this.monthlyReport);
         this.dataToDonut(this.summarizedData);
       }
       this.loading = false;

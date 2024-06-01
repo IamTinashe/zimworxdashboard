@@ -29,7 +29,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'May 2024',
+      default: 'ZimWorX',
       description: 'Sidebar title'
     },
     shortTitle: {

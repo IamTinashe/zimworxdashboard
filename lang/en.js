@@ -1,6 +1,6 @@
 module.exports = {
   "sidebar": {
-    "title": "May 2024",
+    "title": "ZimWorX",
     "shortTitle": "CT",
     "dashboard": "Dashboard",
     "pages": "Pages",
