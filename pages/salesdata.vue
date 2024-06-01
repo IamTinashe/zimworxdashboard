@@ -106,19 +106,18 @@
                 </div>
               </div>
             </div>
-            <div class="card">
+            <div class="card py-5">
               <div class="row">
                 <div class="col-12 col-md-5">
                   <div id="chart">
-                    <apexchart type="donut" :options="donutSalespeople.chartOptions" :series="donutSalespeople.series">
+                    <apexchart type="donut" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions" :series="donutSalespeople.series">
                     </apexchart>
                   </div>
                 </div>
                 <div class="col-md-2"></div>
                 <div class="col-12 col-md-5">
                   <div id="chart">
-                    <apexchart type="donut" :options="donutSeatCategory.chartOptions"
-                      :series="donutSeatCategory.series">
+                    <apexchart type="donut" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series">
                     </apexchart>
                   </div>
                 </div>
@@ -228,6 +227,7 @@ export default {
             type: 'donut'
           },
           labels: [],
+          colors: [ '#FF6384', '#36A2EB', '#FFCE56', '#FF9900', '#33FF99', '#9966CC',  '#FF69B4', '#00CED1', '#FF6347', '#8A2BE2', '#20B2AA', '#FFA07A'],
           responsive: [{
             breakpoint: 480,
             options: {
@@ -240,7 +240,7 @@ export default {
             }
           }],
           legend: {
-            position: 'right',
+            position: 'bottom',
             formatter: function (seriesName, opts) {
               return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
             }
@@ -266,7 +266,7 @@ export default {
             }
           }],
           legend: {
-            position: 'right',
+            position: 'bottom',
             formatter: function (seriesName, opts) {
               return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
             }
@@ -279,6 +279,24 @@ export default {
     date(newDate) {
       this.generateReport(newDate);
       this.getSelectedMonthYear(newDate);
+    },
+    'donutSalespeople.series': {
+      handler(newSeries) {
+        if (this.$refs.apexChartSalespeople) {
+          this.$refs.apexChartSalespeople.updateSeries(newSeries);
+          this.$refs.apexChartSalespeople.updateOptions({ labels: this.donutSalespeople.chartOptions.labels });
+        }
+      },
+      deep: true
+    },
+    'donutSeatCategory.series': {
+      handler(newSeries) {
+        if (this.$refs.apexChartSeatCategory) {
+          this.$refs.apexChartSeatCategory.updateSeries(newSeries);
+          this.$refs.apexChartSeatCategory.updateOptions({ labels: this.donutSeatCategory.chartOptions.labels });
+        }
+      },
+      deep: true
     }
   },
   methods: {
