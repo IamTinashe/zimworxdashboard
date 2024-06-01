@@ -7,27 +7,32 @@
     </div>
     <div class="row" v-else>
       <div class="col-12">
-        <div>
-          <div class="row">
-            <div class="col-md-10"></div>
-            <div class="col-md-2 col-12">
-              <v-btn :color="defaultColor" class="mb-3" @click="dialog = true">Select Month</v-btn>
-              <v-dialog v-model="dialog" max-width="300" class="elevation-1 mt-0">
-                <v-card>
-                  <v-card-title class="headline">Select a Month</v-card-title>
-                  <v-card-text>
-                    <v-date-picker v-model="date" :allowed-dates="allowedDates" :min="minDate" :max="maxDate"
-                      class="mt-4" type="month" />
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn :color="defaultColor" @click="dialog = false">OK</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <div class="card text-center">
+              <h2 class="card-title" style="color: #000;">{{ selectedMonthYear }}</h2>
             </div>
           </div>
+          <div class="col-md-6"></div>
+          <div class="col-md-2 col-12">
+            <v-btn :color="defaultColor" class="mb-3" @click="dialog = true">Select Month</v-btn>
+            <v-dialog v-model="dialog" max-width="300" class="elevation-1 mt-0">
+              <v-card>
+                <v-card-title class="headline">Select a Month</v-card-title>
+                <v-card-text>
+                  <v-date-picker v-model="date" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" class="mt-4"
+                    type="month" />
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn :color="defaultColor" @click="dialog = false">OK</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
         </div>
+      </div>
+      <div class="col-12" v-if="monthlyReport.length">
         <div class="row">
           <div class="col-12">
             <div class="card pb-3">
@@ -76,7 +81,7 @@
                     <slot name="header">
                       <h4 class="card-title text-center">Top Category</h4>
                       <h3 class="card-title text-center py-0 my-0">{{ topCategory.name }}</h3>
-                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{topCategory.seats }} Seats</h4>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{ topCategory.seats }} Seats</h4>
                     </slot>
                   </div>
                 </div>
@@ -85,7 +90,8 @@
                     <slot name="header">
                       <h4 class="card-title text-center">Top Salesperson</h4>
                       <h3 class="card-title text-center py-0 my-0">{{ topSalesperson.name }}</h3>
-                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{topSalesperson.seats }} Seats</h4>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{ topSalesperson.seats }} Seats
+                      </h4>
                     </slot>
                   </div>
                 </div>
@@ -94,7 +100,7 @@
                     <slot name="header">
                       <h4 class="card-title text-center">Top Client</h4>
                       <h3 class="card-title text-center py-0 my-0">{{ topClient.name }}</h3>
-                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{topClient.seats }} Seats</h4>
+                      <h4 class="card-title text-center mt-0 pt-0 pb-3 color-black">{{ topClient.seats }} Seats</h4>
                     </slot>
                   </div>
                 </div>
@@ -146,6 +152,15 @@
           </div>
         </div>
       </div>
+      <div class="col-12" v-else>
+        <div class="row">
+          <div class="col-12">
+            <div class="card text-center py-5">
+              <h3 class="card-title">There is no data yet for <bold>{{ selectedMonthYear }}</bold>. Please choose a different month or check again in a few days.</h3>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -157,6 +172,7 @@ export default {
   name: "salesdata",
   data() {
     return {
+      selectedMonthYear: "",
       defaultColor: '#42b883',
       dialog: false,
       minDate: "2021-01",
@@ -262,6 +278,7 @@ export default {
   watch: {
     date(newDate) {
       this.generateReport(newDate);
+      this.getSelectedMonthYear(newDate);
     }
   },
   methods: {
@@ -282,6 +299,15 @@ export default {
       let formattedMonth = month < 10 ? '0' + month : month;
 
       return `${formattedDayOfMonth}-${formattedMonth}-${year}`;
+    },
+    getSelectedMonthYear(date) {
+      let [year, month] = date.split('-');
+      let monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      let monthIndex = parseInt(month, 10) - 1;
+      this.selectedMonthYear = monthNames[monthIndex] + " " + year;
     },
     filterByClosedMonthYear(data, month, year) {
       return data.filter(item => {
@@ -451,12 +477,16 @@ export default {
       this.loading = true;
       let month = this.getMonthFromString(date);
       let year = this.getYearFromString(date);
+      this.getSelectedMonthYear(date);
       let data = this.filterByClosedMonthYear(this.allOpportunites, month, year);
       this.monthlyReport = this.filterBySeatCount(data);
-      this.getCompanyWithHighestSeats(this.monthlyReport)
-      this.summarizeData(this.monthlyReport);
-      this.groupSeatCategoryBySeatCount(this.monthlyReport);
-      this.dataToDonut(this.summarizedData);
+      if (this.monthlyReport.length > 0) {
+        this.getCompanyWithHighestSeats(this.monthlyReport)
+        this.summarizeData(this.monthlyReport);
+        this.groupSeatCategoryBySeatCount(this.monthlyReport);
+        this.dataToDonut(this.summarizedData);
+      }
+      console.log(this.summarizedData)
       this.loading = false;
     }
   },
