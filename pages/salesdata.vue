@@ -521,7 +521,7 @@ export default {
         this.donutSeatCategory.chartOptions.labels.push(value.seatCategory);
         this.donutSeatCategory.series.push(value.totalSeats);
       });
-      this.topCategory.name = result[0].seatCategory;
+      this.topCategory.name = result[0].seatCategory == 'SDDS' ? 'Dental Cordinator' : result[0].seatCategory;
       this.topCategory.seats = result[0].totalSeats;
     },
 
