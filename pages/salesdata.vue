@@ -311,7 +311,7 @@ export default {
     },
     filterByClosedMonthYear(data, month, year) {
       return data.filter(item => {
-        if (item.startDate && item.closedDate) {
+        if (item.startDate && (item.stage == "Closed Won" || item.stage == "Payments" ||  item.stage == "Billing")) {
           let startDate = new Date(item.startDate * 1000);
           return startDate.getMonth() === month && startDate.getFullYear() === year;
         }
@@ -486,7 +486,6 @@ export default {
         this.groupSeatCategoryBySeatCount(this.monthlyReport);
         this.dataToDonut(this.summarizedData);
       }
-      console.log(this.summarizedData)
       this.loading = false;
     }
   },
