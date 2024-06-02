@@ -23,6 +23,14 @@
           }"
         >
         </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: $t('sidebar.salespredictivemodelling'),
+            icon: 'tim-icons icon-atom',
+            path: '/sales-predictive-modelling'
+          }"
+        >
+        </sidebar-item>
         <!--<sidebar-item
           :link="{
             name: $t('sidebar.supportDDS'),
