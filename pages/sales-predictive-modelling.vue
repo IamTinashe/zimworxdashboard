@@ -38,6 +38,7 @@ export default {
           bar: {
             horizontal: false,
             columnWidth: '50%',
+            endingShape: 'rounded',
           },
         },
         xaxis: {
@@ -45,7 +46,7 @@ export default {
         },
         yaxis: {
           title: {
-            text: 'Predicted Seats',
+            text: 'Seats',
           },
         },
         legend: {
@@ -65,33 +66,68 @@ export default {
       },
     };
   },
-  async mounted() {
-    await this.loadData();
-    this.loading = false;
-  },
   methods: {
     async loadData() {
       let data = await statistics.getForecast();
+      let actual = await statistics.getAllReports();
+      actual = this.getLastDayOfMonthData(actual);
 
       let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       let months = [];
       let totalSeatCounts = [];
+      let seatedThisMonthCounts = [];
 
-      data.forEach((monthData) => {
+      data.forEach((monthData, index) => {
         let month = monthNames[monthData.month - 1];
         months.push(month);
 
         let totalSeatCount = monthData.salespersonSeatCounts.reduce((acc, spData) => acc + spData.seatCount, 0);
         totalSeatCounts.push(totalSeatCount);
+
+        // Get the corresponding actual data for the same month
+        let actualData = actual.lastDayData.find(d => d.createdOn[1] === monthData.month);
+        seatedThisMonthCounts.push(actualData ? actualData.seatedThisMonth : 0);
       });
 
-      this.series = [{
-        name: 'Total Seat Count',
-        data: totalSeatCounts,
-      }];
+      this.series = [
+        {
+          name: 'Predicted Seats',
+          data: totalSeatCounts,
+        },
+        {
+          name: 'Actual Seats',
+          data: seatedThisMonthCounts,
+        },
+      ];
 
       this.chartOptions.xaxis.categories = months;
     },
+    getLastDayOfMonthData(data) {
+      const groupedData = {};
+      const lastDayData = [];
+
+      data.forEach(item => {
+        const [year, month, day] = item.createdOn;
+        const key = `${year}-${month}`;
+        
+        if (!groupedData[key] || day > groupedData[key].createdOn[2]) {
+          groupedData[key] = item;
+        }
+      });
+
+      for (const key in groupedData) {
+        lastDayData.push(groupedData[key]);
+      }
+
+      return {
+        lastDayData,
+        lastObject: data[data.length - 1]
+      };
+    },
+  },
+  async mounted() {
+    await this.loadData();
+    this.loading = false;
   },
 };
 </script>

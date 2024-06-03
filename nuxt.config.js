@@ -57,8 +57,7 @@ export default {
    */
   plugins: [
     `~/plugins/dashboard-plugin.js`,
-    { src: '~/plugins/apexcharts.js', mode: 'client' }
-  ],
+    { src: '~/plugins/apexcharts.js', mode: 'client' },],
   /*
    ** Nuxt.js dev-modules
    */
