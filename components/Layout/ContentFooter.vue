@@ -40,7 +40,7 @@
           href="https://www.zimworx.com"
           target="_blank"
           rel="noopener"
-          >ZimWorx</a
+          >ZimWorX</a
         >
       </div>
     </div>
