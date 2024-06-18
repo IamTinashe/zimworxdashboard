@@ -6,33 +6,70 @@
       </div>
     </div>
     <div class="row" v-else>
-      <v-date-picker
-                v-model="selectedDate"
-                :allowed-dates="allowedDates"
-                :min="minDate"
-                :max="maxDate"
-                type="month"
-              ></v-date-picker>
-      <v-container>
-        <v-row>
-          <v-col>
-            <apexchart type="pie" height="350" ref="apexChartIndustryType" :options="chartOptions" :series="series"
-              @dataPointSelection="handleDataPointSelection"></apexchart>
-          </v-col>
-        </v-row>
-        <v-dialog v-model="isModalVisible" min-width="600px">
-          <v-card>
-            <v-card-title>Customers List</v-card-title>
-            <v-card-text>
-              <v-data-table :items="filteredData" :headers="headers"></v-data-table>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="isModalVisible = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-container>
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-6 col-12">
+            {{ selectedMonthYear }}
+          </div>
+          <div class="col-md-6 col-12">
+            <v-date-picker float-right v-model="selectedDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" type="month"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <v-container>
+          <div class="card py-5">
+            <h3 class="card-title px-5">Client Roll-Offs</h3>
+            <div class="row">
+              <!--<div class="col-md-3 col-12">
+                <v-row>
+                  <v-col>
+                    <apexchart type="donut" ref="apexChartIndustryType" :options="chartOptions"
+                      :series="series" @dataPointSelection="handleDataPointSelection"></apexchart>
+                  </v-col>
+                </v-row>
+              </div>
+              <div class="col-md-3 col-12">
+                <v-row>
+                  <v-col>
+                    <apexchart type="donut" ref="apexChartIndustryType" :options="chartOptions"
+                      :series="series" @dataPointSelection="handleDataPointSelection"></apexchart>
+                  </v-col>
+                </v-row>
+              </div> -->
+              <div class="col-md-3 col-12">
+                <v-row>
+                  <v-col>
+                    <apexchart type="donut" width="400" ref="apexChartSpecialty" :options="specialtyClientChart.chartOptions"
+                      :series="specialtyClientChart.series" @dataPointSelection="handleSpecialtyDataPointSelection"></apexchart>
+                  </v-col>
+                </v-row>
+              </div>
+              <div class="col-md-3 col-12">
+                <v-row>
+                  <v-col>
+                    <apexchart type="donut" width="400" ref="apexChartIndustryType" :options="industryClientChart.chartOptions"
+                      :series="industryClientChart.series" @dataPointSelection="handleIndustryDataPointSelection"></apexchart>
+                  </v-col>
+                </v-row>
+              </div>
+            </div>
+          </div>
+
+          <v-dialog v-model="isModalVisible" min-width="600px">
+            <v-card>
+              <v-card-title>Customers List</v-card-title>
+              <v-card-text>
+                <v-data-table :items="filteredData" :headers="headers"></v-data-table>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="isModalVisible = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-container>
+      </div>
     </div>
   </div>
 </template>
@@ -50,22 +87,31 @@ export default {
       selectedDate: this.getFormattedDate(new Date()), // Format to "YYYY-MM"
       maxDate: this.getFormattedDate(new Date(new Date().getFullYear() + 10, 11, 31)), // 10 years in the future
       industries: {},
-      series: [],
-      chartOptions: {
-        series: [],
-        chart: {
-          type: 'pie'
-        },
-        labels: []
-      },
+      specialties: {},
+      selectedMonthYear: "",
+      industryClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
+            position: 'bottom',
+            formatter: function (seriesName, opts) {
+              return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
+            }
+          } }},
+      specialtyClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
+            position: 'bottom',
+            formatter: function (seriesName, opts) {
+              return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
+            }
+          } }},
       isModalVisible: false,
       selectedIndustry: '',
+      selectedSpecialty: '',
       filteredData: [],
       headers: [
         { text: 'Name', value: 'name' },
         { text: 'Industry', value: 'industry' },
+        { text: 'Specialty', value: 'specialty' },
         { text: 'Salesperson', value: 'salesperson' },
         { text: 'CSP', value: 'csp' },
+        { text: 'Seats', value: 'totalSeats' },
         { text: 'Tenure', value: 'tenure' },
         { text: 'State', value: 'state' }
       ],
@@ -73,14 +119,24 @@ export default {
     }
   },
   watch: {
-    selectedDate() {
-      this.filterByMonth()
+    selectedDate(val) {
+      this.filterByMonth();
+      this.getSelectedMonthYear(val);
     },
-    'chartOptions.series': {
+    'industryClientChart.chartOptions.series': {
       handler(newSeries) {
         if (this.$refs.apexChartIndustryType) {
           this.$refs.apexChartIndustryType.updateSeries(newSeries);
-          this.$refs.apexChartIndustryType.updateOptions({ labels: this.chartOptions.labels });
+          this.$refs.apexChartIndustryType.updateOptions({ labels: this.industryClientChart.chartOptions.labels });
+        }
+      },
+      deep: true
+    },
+    'specialtyClientChart.chartOptions.series': {
+      handler(newSeries) {
+        if (this.$refs.apexChartSpecialty) {
+          this.$refs.apexChartSpecialty.updateSeries(newSeries);
+          this.$refs.apexChartSpecialty.updateOptions({ labels: this.specialtyClientChart.chartOptions.labels });
         }
       },
       deep: true
@@ -99,6 +155,15 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, "0");
       return `${year}-${month}`;
     },
+    getSelectedMonthYear(date) {
+      let [year, month] = date.split('-');
+      let monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      let monthIndex = parseInt(month, 10) - 1;
+      this.selectedMonthYear = monthNames[monthIndex] + " " + year;
+    },
     async getInactiveClients() {
       return await statistics.getAllInactiveClients();
     },
@@ -107,14 +172,29 @@ export default {
         if (!this.industries[customer.industry]) {
           this.industries[customer.industry] = []
         }
+        if(!this.specialties[customer.specialty]){
+          this.specialties[customer.specialty] = []
+        }
+
+        this.specialties[customer.specialty].push(customer)
         this.industries[customer.industry].push(customer)
       })
-      this.chartOptions.series = Object.values(this.industries).map(industry => industry.length)
-      this.chartOptions.labels = Object.keys(this.industries)
+
+      this.specialtyClientChart.chartOptions.series = Object.values(this.specialties).map(specialty => specialty.length)
+      this.specialtyClientChart.chartOptions.labels = Object.keys(this.specialties)
+
+      this.industryClientChart.chartOptions.series = Object.values(this.industries).map(industry => industry.length)
+      this.industryClientChart.chartOptions.labels = Object.keys(this.industries)
+
     },
-    handleDataPointSelection(event, chartContext, config) {
-      this.selectedIndustry = this.chartOptions.labels[config.dataPointIndex]
+    handleIndustryDataPointSelection(event, chartContext, config) {
+      this.selectedIndustry = this.industryClientChart.chartOptions.labels[config.dataPointIndex]
       this.filteredData = this.industries[this.selectedIndustry]
+      this.isModalVisible = true
+    },
+    handleSpecialtyDataPointSelection(event, chartContext, config) {
+      this.selectedSpecialty = this.specialtyClientChart.chartOptions.labels[config.dataPointIndex]
+      this.filteredData = this.specialties[this.selectedSpecialty]
       this.isModalVisible = true
     },
     filterByMonth() {
@@ -125,6 +205,7 @@ export default {
       this.thisMonthData = this.data;
       const [year, month] = this.selectedDate.split('-').map(Number);
       this.industries = {};
+      this.specialties = {};
       this.thisMonthData.forEach(customer => {
         const customerDate = new Date(customer.rollOffDate);
         const customerMonth = customerDate.getMonth() + 1;
@@ -134,10 +215,18 @@ export default {
             this.industries[customer.industry] = [];
           }
           this.industries[customer.industry].push(customer);
+
+          if (!this.specialties[customer.specialty]) {
+            this.specialties[customer.specialty] = [];
+          }
+          this.specialties[customer.specialty].push(customer);
         }
       });
-      this.chartOptions.series = Object.values(this.industries).map(industry => industry.length);
-      this.chartOptions.labels = Object.keys(this.industries);
+      this.industryClientChart.chartOptions.series = Object.values(this.industries).map(industry => industry.length);
+      this.industryClientChart.chartOptions.labels = Object.keys(this.industries);
+
+      this.specialtyClientChart.chartOptions.series = Object.values(this.specialties).map(specialty => specialty.length)
+      this.specialtyClientChart.chartOptions.labels = Object.keys(this.specialties)
     },
   }
 }
@@ -150,5 +239,9 @@ export default {
 
 .v-dialog__container {
   display: block !important;
+}
+
+.float-right{
+  float: right !important;
 }
 </style>
