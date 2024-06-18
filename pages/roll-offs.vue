@@ -20,25 +20,6 @@
               @dataPointSelection="handleDataPointSelection"></apexchart>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
-            <v-menu
-              v-model="menu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <v-date-picker
-                v-model="selectedDate"
-                :allowed-dates="allowedDates"
-                :min="minDate"
-                :max="maxDate"
-                type="month"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
         <v-dialog v-model="isModalVisible" min-width="600px">
           <v-card>
             <v-card-title>Customers List</v-card-title>
