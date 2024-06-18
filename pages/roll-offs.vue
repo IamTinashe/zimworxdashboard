@@ -80,6 +80,7 @@
                 <v-data-table :items="filteredData" :headers="headers"></v-data-table>
               </v-card-text>
               <v-card-actions>
+                <v-btn color="primary" @click="downloadCsv">Download CSV</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="isModalVisible = false">Close</v-btn>
               </v-card-actions>
@@ -109,6 +110,8 @@ export default {
       csps: {},
       selectedMonthYear: "",
       dialog: false,
+      totalClientsLost: 0,
+      totalSeatsLost: 0,
       industryClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
             position: 'bottom',
             formatter: function (seriesName, opts) {
@@ -254,6 +257,24 @@ export default {
       this.cspClientChart.chartOptions.series = Object.values(this.csps).map(csp => csp.length)
       this.cspClientChart.chartOptions.labels = Object.keys(this.csps)
     },
+    downloadCsv() {
+      let csvContent = this.convertToCsv(this.filteredData);
+      let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      let link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', 'clients_list.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    convertToCsv(data) {
+      let headers = this.headers.map(header => header.text);
+      let rows = data.map(item => {
+        return this.headers.map(header => item[header.value]);
+      });
+      let csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+      return csv;
+    }
   }
 }
 </script>
