@@ -8,18 +8,32 @@
     <div class="row" v-else>
       <div class="col-12">
         <div class="row">
-          <div class="col-md-6 col-12">
-            {{ selectedMonthYear }}
+          <div class="col-12 col-md-4">
+            <div class="card text-center">
+              <h2 class="card-title" style="color: #000;">{{ selectedMonthYear }}</h2>
+            </div>
           </div>
-          <div class="col-md-6 col-12">
-            <v-date-picker float-right v-model="selectedDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" type="month"/>
+          <div class="col-md-6"></div>
+          <div class="col-md-2 col-12">
+            <v-btn :color="defaultColor" class="mb-3" @click="dialog = true">Select Month</v-btn>
+            <v-dialog v-model="dialog" max-width="300" class="elevation-1 mt-0">
+              <v-card>
+                <v-card-title class="headline">Select a Month</v-card-title>
+                <v-card-text>
+                  <v-date-picker float-right v-model="selectedDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" type="month"/>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn :color="defaultColor" @click="dialog = false">OK</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </div>
         </div>
       </div>
       <div class="col-12">
         <v-container>
           <div class="card py-5">
-            <h3 class="card-title px-5">Client Roll-Offs</h3>
             <div class="row">
               <!--<div class="col-md-3 col-12">
                 <v-row>
@@ -37,17 +51,19 @@
                   </v-col>
                 </v-row>
               </div> -->
-              <div class="col-md-3 col-12">
+              <div class="col-md-3 col-12 text-center">
                 <v-row>
                   <v-col>
+                    <p>Clients By Specialty</p>
                     <apexchart type="donut" width="400" ref="apexChartSpecialty" :options="specialtyClientChart.chartOptions"
                       :series="specialtyClientChart.series" @dataPointSelection="handleSpecialtyDataPointSelection"></apexchart>
                   </v-col>
                 </v-row>
               </div>
-              <div class="col-md-3 col-12">
+              <div class="col-md-3 col-12 text-center">
                 <v-row>
                   <v-col>
+                    <p>Clients By Industry</p>
                     <apexchart type="donut" width="400" ref="apexChartIndustryType" :options="industryClientChart.chartOptions"
                       :series="industryClientChart.series" @dataPointSelection="handleIndustryDataPointSelection"></apexchart>
                   </v-col>
@@ -83,12 +99,14 @@ export default {
       loading: true,
       data: [],
       thisMonthData: [],
+      defaultColor: '#42b883',
       minDate: "2021-01",
       selectedDate: this.getFormattedDate(new Date()), // Format to "YYYY-MM"
       maxDate: this.getFormattedDate(new Date(new Date().getFullYear() + 10, 11, 31)), // 10 years in the future
       industries: {},
       specialties: {},
       selectedMonthYear: "",
+      dialog: false,
       industryClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
             position: 'bottom',
             formatter: function (seriesName, opts) {
@@ -113,6 +131,7 @@ export default {
         { text: 'CSP', value: 'csp' },
         { text: 'Seats', value: 'totalSeats' },
         { text: 'Tenure', value: 'tenure' },
+        { text: 'Roll-Off Date', value: 'rollOffDate' },
         { text: 'State', value: 'state' }
       ],
       menu: false
