@@ -42,15 +42,16 @@
                       :series="series" @dataPointSelection="handleDataPointSelection"></apexchart>
                   </v-col>
                 </v-row>
-              </div>
-              <div class="col-md-3 col-12">
+              </div> -->
+              <div class="col-md-3 col-12 text-center">
                 <v-row>
                   <v-col>
-                    <apexchart type="donut" ref="apexChartIndustryType" :options="chartOptions"
-                      :series="series" @dataPointSelection="handleDataPointSelection"></apexchart>
+                    <p>Clients By CSPs</p>
+                    <apexchart type="donut" width="400" ref="apexChartCSP" :options="cspClientChart.chartOptions"
+                      :series="cspClientChart.series" @dataPointSelection="handleCSPDataPointSelection"></apexchart>
                   </v-col>
                 </v-row>
-              </div> -->
+              </div>
               <div class="col-md-3 col-12 text-center">
                 <v-row>
                   <v-col>
@@ -105,6 +106,7 @@ export default {
       maxDate: this.getFormattedDate(new Date(new Date().getFullYear() + 10, 11, 31)), // 10 years in the future
       industries: {},
       specialties: {},
+      csps: {},
       selectedMonthYear: "",
       dialog: false,
       industryClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
@@ -119,9 +121,16 @@ export default {
               return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
             }
           } }},
+      cspClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
+            position: 'bottom',
+            formatter: function (seriesName, opts) {
+              return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
+            }
+          } }},
       isModalVisible: false,
       selectedIndustry: '',
       selectedSpecialty: '',
+      selectedCSP: '',
       filteredData: [],
       headers: [
         { text: 'Name', value: 'name' },
@@ -160,11 +169,19 @@ export default {
       },
       deep: true
     },
+    'cspClientChart.chartOptions.series': {
+      handler(newSeries) {
+        if (this.$refs.apexChartCSP) {
+          this.$refs.apexChartCSP.updateSeries(newSeries);
+          this.$refs.apexChartCSP.updateOptions({ labels: this.cspClientChart.chartOptions.labels });
+        }
+      },
+      deep: true
+    },
   },
   async mounted() {
 
     this.data = await this.getInactiveClients();
-    this.prepareChartData()
     this.loading = false;
   },
   methods: {
@@ -186,26 +203,6 @@ export default {
     async getInactiveClients() {
       return await statistics.getAllInactiveClients();
     },
-    prepareChartData() {
-      this.thisMonthData.forEach(customer => {
-        if (!this.industries[customer.industry]) {
-          this.industries[customer.industry] = []
-        }
-        if(!this.specialties[customer.specialty]){
-          this.specialties[customer.specialty] = []
-        }
-
-        this.specialties[customer.specialty].push(customer)
-        this.industries[customer.industry].push(customer)
-      })
-
-      this.specialtyClientChart.chartOptions.series = Object.values(this.specialties).map(specialty => specialty.length)
-      this.specialtyClientChart.chartOptions.labels = Object.keys(this.specialties)
-
-      this.industryClientChart.chartOptions.series = Object.values(this.industries).map(industry => industry.length)
-      this.industryClientChart.chartOptions.labels = Object.keys(this.industries)
-
-    },
     handleIndustryDataPointSelection(event, chartContext, config) {
       this.selectedIndustry = this.industryClientChart.chartOptions.labels[config.dataPointIndex]
       this.filteredData = this.industries[this.selectedIndustry]
@@ -216,15 +213,17 @@ export default {
       this.filteredData = this.specialties[this.selectedSpecialty]
       this.isModalVisible = true
     },
+    handleCSPDataPointSelection(event, chartContext, config) {
+      this.selectedCSP = this.cspClientChart.chartOptions.labels[config.dataPointIndex]
+      this.filteredData = this.csps[this.selectedCSP]
+      this.isModalVisible = true
+    },
     filterByMonth() {
-      if (!this.selectedDate) {
-        this.prepareChartData();
-        return;
-      }
       this.thisMonthData = this.data;
       const [year, month] = this.selectedDate.split('-').map(Number);
       this.industries = {};
       this.specialties = {};
+      this.csps = {};
       this.thisMonthData.forEach(customer => {
         const customerDate = new Date(customer.rollOffDate);
         const customerMonth = customerDate.getMonth() + 1;
@@ -239,6 +238,11 @@ export default {
             this.specialties[customer.specialty] = [];
           }
           this.specialties[customer.specialty].push(customer);
+
+          if (!this.csps[customer.csp]) {
+            this.csps[customer.csp] = [];
+          }
+          this.csps[customer.csp].push(customer);
         }
       });
       this.industryClientChart.chartOptions.series = Object.values(this.industries).map(industry => industry.length);
@@ -246,6 +250,9 @@ export default {
 
       this.specialtyClientChart.chartOptions.series = Object.values(this.specialties).map(specialty => specialty.length)
       this.specialtyClientChart.chartOptions.labels = Object.keys(this.specialties)
+
+      this.cspClientChart.chartOptions.series = Object.values(this.csps).map(csp => csp.length)
+      this.cspClientChart.chartOptions.labels = Object.keys(this.csps)
     },
   }
 }
