@@ -25,6 +25,14 @@
         </sidebar-item>
         <sidebar-item
           :link="{
+            name: $t('sidebar.roll-offs'),
+            icon: 'tim-icons icon-atom',
+            path: '/roll-offs'
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
             name: $t('sidebar.salespredictivemodelling'),
             icon: 'tim-icons icon-atom',
             path: '/sales-predictive-modelling'

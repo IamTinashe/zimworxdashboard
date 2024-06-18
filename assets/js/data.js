@@ -119,6 +119,24 @@ class Statitics {
       });
     }
 
+    static getAllInactiveClients(){
+      let api = `${base}/customer/nonactiveclients`;
+      return new Promise(async (resolve, reject) => {
+        try {
+          let response = await axios.get(api, {
+            credentials: true,
+            auth: {
+              username: authCredentials.username,
+              password: authCredentials.password
+            }
+          });
+          resolve(response.data);
+        } catch (error) {
+          reject(error.response);
+        }
+      });
+    }
+
     static replaceState(originalObject, stateIdMapping) {
       for(let j = 0; j < originalObject.length; j++){
         for (let i = 0; i < stateIdMapping.length; i++) {

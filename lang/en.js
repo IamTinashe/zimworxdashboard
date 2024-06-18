@@ -39,6 +39,7 @@ module.exports = {
     "calendar": "Calendar",
     "supportDDS": "Support DDS",
     "salesdata": "Sales Data",
-    "salespredictivemodelling": "Predictive Modelling"
+    "salespredictivemodelling": "Predictive Modelling",
+    "roll-offs": "Roll-Offs"
   }
 }
