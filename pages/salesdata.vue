@@ -120,21 +120,24 @@
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Salespeople</h3>
                   <div id="chart">
-                    <apexchart type="donut" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions" :series="donutSalespeople.series">
+                    <apexchart type="donut" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions"
+                      :series="donutSalespeople.series">
                     </apexchart>
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Category</h3>
                   <div id="chart">
-                    <apexchart type="donut" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series">
+                    <apexchart type="donut" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions"
+                      :series="donutSeatCategory.series">
                     </apexchart>
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Industry</h3>
                   <div id="chart">
-                    <apexchart type="donut" ref="apexChartIndustryType" :options="donutIndustryType.chartOptions" :series="donutIndustryType.series">
+                    <apexchart type="donut" ref="apexChartIndustryType" :options="donutIndustryType.chartOptions"
+                      :series="donutIndustryType.series">
                     </apexchart>
                   </div>
                 </div>
@@ -172,7 +175,9 @@
         <div class="row">
           <div class="col-12">
             <div class="card text-center py-5">
-              <h3 class="card-title">There is no data yet for <bold>{{ selectedMonthYear }}</bold>. Please choose a different month or check again in a few days.</h3>
+              <h3 class="card-title">There is no data yet for <bold>{{ selectedMonthYear }}</bold>. Please choose a
+                different
+                month or check again in a few days.</h3>
             </div>
           </div>
         </div>
@@ -248,7 +253,7 @@ export default {
             type: 'donut'
           },
           labels: [],
-          colors: [ '#FF6384', '#36A2EB', '#FFCE56', '#FF9900', '#33FF99', '#9966CC',  '#FF69B4', '#00CED1', '#FF6347', '#8A2BE2', '#20B2AA', '#FFA07A'],
+          colors: ['#FF6384', '#36A2EB', '#FFCE56', '#FF9900', '#33FF99', '#9966CC', '#FF69B4', '#00CED1', '#FF6347', '#8A2BE2', '#20B2AA', '#FFA07A'],
           responsive: [{
             breakpoint: 480,
             options: {
@@ -301,7 +306,7 @@ export default {
             type: 'donut'
           },
           labels: [],
-          colors: [ '#DA70D6', '#87CEEB', '#FF8C00', '#00FF00', '#33FF99', '#9966CC', '#00CED1', '#FF6347', '#FF69B4', '#8A2BE2', '#20B2AA', '#FFA07A'],
+          colors: ['#DA70D6', '#87CEEB', '#FF8C00', '#00FF00', '#33FF99', '#9966CC', '#00CED1', '#FF6347', '#FF69B4', '#8A2BE2', '#20B2AA', '#FFA07A'],
           responsive: [{
             breakpoint: 480,
             options: {
@@ -386,7 +391,7 @@ export default {
     },
     filterByClosedMonthYear(data, month, year) {
       return data.filter(item => {
-        if (item.startDate && (item.stage == "Closed Won" || item.stage == "Payments" ||  item.stage == "Billing")) {
+        if (item.startDate && (item.stage == "Closed Won" || item.stage == "Payments" || item.stage == "Billing")) {
           let startDate = new Date(item.startDate * 1000);
           return startDate.getMonth() === month && startDate.getFullYear() === year;
         }
@@ -521,6 +526,11 @@ export default {
         this.donutSeatCategory.chartOptions.labels.push(value.seatCategory);
         this.donutSeatCategory.series.push(value.totalSeats);
       });
+      if (this.donutSeatCategory.chartOptions && this.donutSeatCategory.chartOptions.labels) {
+        this.donutSeatCategory.chartOptions.labels = this.donutSeatCategory.chartOptions.labels.map(label => {
+          return label === 'SDDS' ? 'Dental Cordinator' : label;
+        });
+      }
       this.topCategory.name = result[0].seatCategory == 'SDDS' ? 'Dental Cordinator' : result[0].seatCategory;
       this.topCategory.seats = result[0].totalSeats;
     },
@@ -534,7 +544,7 @@ export default {
       data.forEach(item => {
         let { industryType, seatCount } = item;
         k = item.seatCount + k;
-        if(item.seatType != "Replacement Seats"){
+        if (item.seatType != "Replacement Seats") {
           if (groupedData[industryType]) {
             groupedData[industryType] = groupedData[industryType] + seatCount;
           } else {
