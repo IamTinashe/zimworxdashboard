@@ -529,17 +529,21 @@ export default {
       let groupedData = {};
       this.donutIndustryType.chartOptions.labels = [];
       this.donutIndustryType.series = [];
+      let k = 0;
 
       data.forEach(item => {
         let { industryType, seatCount } = item;
-        if (groupedData[industryType]) {
-          groupedData[industryType] += seatCount;
-        } else {
-          groupedData[industryType] = seatCount;
+        k = item.seatCount + k;
+        if(item.seatType != "Replacement Seats"){
+          if (groupedData[industryType]) {
+            groupedData[industryType] = groupedData[industryType] + seatCount;
+          } else {
+            groupedData[industryType] = seatCount;
+          }
         }
       });
 
-      console.log(groupedData)
+      console.log(k)
 
       let result = Object.keys(groupedData).map(category => ({
         IndustryType: category,

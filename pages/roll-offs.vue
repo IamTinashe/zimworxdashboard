@@ -20,7 +20,8 @@
               <v-card>
                 <v-card-title class="headline">Select a Month</v-card-title>
                 <v-card-text>
-                  <v-date-picker float-right v-model="selectedDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" type="month"/>
+                  <v-date-picker float-right v-model="selectedDate" :allowed-dates="allowedDates" :min="minDate"
+                    :max="maxDate" type="month" />
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -28,6 +29,28 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+          </div>
+        </div>
+        <div class="card pb-3">
+          <div class="row">
+            <div class="col-md-3 col-12">
+              <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Total Seats Lost</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ totalSeatsLost }} Seats</h3>
+                    </slot>
+                  </div>
+            </div>
+            <v-divider class="mx-4 mt-3" inset vertical></v-divider>
+            <div class="col-md-3 col-12">
+              <div class="card-header headerClasses">
+                    <slot name="header">
+                      <h4 class="card-title text-center">Total Clients Lost</h4>
+                      <h3 class="card-title text-center py-0 my-0">{{ totalClientsLost }} Clients</h3>
+                    </slot>
+                  </div>
+            </div>
+            <v-divider class="mx-4 mt-3" inset vertical></v-divider>
           </div>
         </div>
       </div>
@@ -56,8 +79,9 @@
                 <v-row>
                   <v-col>
                     <p>Clients By Specialty</p>
-                    <apexchart type="donut" width="400" ref="apexChartSpecialty" :options="specialtyClientChart.chartOptions"
-                      :series="specialtyClientChart.series" @dataPointSelection="handleSpecialtyDataPointSelection"></apexchart>
+                    <apexchart type="donut" width="400" ref="apexChartSpecialty"
+                      :options="specialtyClientChart.chartOptions" :series="specialtyClientChart.series"
+                      @dataPointSelection="handleSpecialtyDataPointSelection"></apexchart>
                   </v-col>
                 </v-row>
               </div>
@@ -65,8 +89,9 @@
                 <v-row>
                   <v-col>
                     <p>Clients By Industry</p>
-                    <apexchart type="donut" width="400" ref="apexChartIndustryType" :options="industryClientChart.chartOptions"
-                      :series="industryClientChart.series" @dataPointSelection="handleIndustryDataPointSelection"></apexchart>
+                    <apexchart type="donut" width="400" ref="apexChartIndustryType"
+                      :options="industryClientChart.chartOptions" :series="industryClientChart.series"
+                      @dataPointSelection="handleIndustryDataPointSelection"></apexchart>
                   </v-col>
                 </v-row>
               </div>
@@ -112,24 +137,36 @@ export default {
       dialog: false,
       totalClientsLost: 0,
       totalSeatsLost: 0,
-      industryClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
+      industryClientChart: {
+        chartOptions: {
+          series: [], chart: { type: 'pie' }, labels: [], legend: {
             position: 'bottom',
             formatter: function (seriesName, opts) {
               return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
             }
-          } }},
-      specialtyClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
+          }
+        }
+      },
+      specialtyClientChart: {
+        chartOptions: {
+          series: [], chart: { type: 'pie' }, labels: [], legend: {
             position: 'bottom',
             formatter: function (seriesName, opts) {
               return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
             }
-          } }},
-      cspClientChart: { chartOptions: { series: [], chart: { type: 'pie'}, labels: [], legend: {
+          }
+        }
+      },
+      cspClientChart: {
+        chartOptions: {
+          series: [], chart: { type: 'pie' }, labels: [], legend: {
             position: 'bottom',
             formatter: function (seriesName, opts) {
               return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]].join('');
             }
-          } }},
+          }
+        }
+      },
       isModalVisible: false,
       selectedIndustry: '',
       selectedSpecialty: '',
@@ -232,6 +269,8 @@ export default {
         const customerMonth = customerDate.getMonth() + 1;
         const customerYear = customerDate.getFullYear();
         if (customerMonth === month && customerYear === year) {
+          this.totalClientsLost++;
+          this.totalSeatsLost = this.totalSeatsLost + customer.totalSeats;
           if (!this.industries[customer.industry]) {
             this.industries[customer.industry] = [];
           }
@@ -288,7 +327,7 @@ export default {
   display: block !important;
 }
 
-.float-right{
+.float-right {
   float: right !important;
 }
 </style>
