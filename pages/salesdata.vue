@@ -136,7 +136,7 @@
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Salespeople</h3>
                   <div id="chart">
-                    <apexchart type="donut" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions"
+                    <apexchart type="donut" style="width: 100%;" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions"
                       :series="donutSalespeople.series">
                     </apexchart>
                   </div>
@@ -144,7 +144,7 @@
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Category</h3>
                   <div id="chart">
-                    <apexchart type="donut" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions"
+                    <apexchart type="donut" style="width: 100%;" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions"
                       :series="donutSeatCategory.series">
                     </apexchart>
                   </div>
@@ -152,7 +152,7 @@
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Industry</h3>
                   <div id="chart">
-                    <apexchart type="donut" ref="apexChartIndustryType" :options="donutIndustryType.chartOptions"
+                    <apexchart type="donut" style="width: 100%;" ref="apexChartIndustryType" :options="donutIndustryType.chartOptions"
                       :series="donutIndustryType.series">
                     </apexchart>
                   </div>
