@@ -502,7 +502,7 @@ export default {
 
       this.selectedSalesPerson = item;
       this.filteredSalesData = this.monthlyReport.filter(
-        entry => entry.salesPerson === item.salesPerson
+        entry => entry.salesPerson === item.salesPerson && entry.seatType !== "Replacement Seats"
       );
       this.filteredSalesData = this.filteredSalesData.map(item => ({
         ...item,
@@ -518,7 +518,7 @@ export default {
     openModalForSalesPie(event, chartContext, config) {
       this.selectedSalesPerson = this.donutSalespeople.chartOptions.labels[config.dataPointIndex];
       this.filteredSalesData = this.monthlyReport.filter(
-        entry => entry.salesPerson === this.selectedSalesPerson
+        entry => entry.salesPerson === this.selectedSalesPerson && entry.seatType !== "Replacement Seats"
       );
       this.filteredSalesData = this.filteredSalesData.map(item => ({
         ...item,
@@ -533,7 +533,7 @@ export default {
     openModalForCategoryPie(event, chartContext, config) {
       let category = this.donutSeatCategory.chartOptions.labels[config.dataPointIndex];
       this.filteredSalesData = this.monthlyReport.filter(
-        entry => entry.seatCategory === category
+        entry => entry.seatCategory === category && entry.seatType !== "Replacement Seats"
       );
       this.filteredSalesData = this.filteredSalesData.map(item => ({
         ...item,
