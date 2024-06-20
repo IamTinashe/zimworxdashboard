@@ -508,7 +508,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
       }));
 
 
@@ -524,7 +524,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
       }));
 
       this.isModalOpen = true;
@@ -540,7 +540,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
       }));
 
       this.isModalOpen = true;
@@ -556,7 +556,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
       }));
 
       this.isModalOpen = true;
