@@ -20,8 +20,8 @@
               <v-card>
                 <v-card-title class="headline">Select a Month</v-card-title>
                 <v-card-text>
-                  <v-date-picker v-model="startDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" class="mt-4"
-                    type="month" />
+                  <v-date-picker v-model="startDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate"
+                    class="mt-4" type="month" />
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -36,8 +36,8 @@
               <v-card>
                 <v-card-title class="headline">Select a Month</v-card-title>
                 <v-card-text>
-                  <v-date-picker v-model="endDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" class="mt-4"
-                    type="month" />
+                  <v-date-picker v-model="endDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate"
+                    class="mt-4" type="month" />
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -136,25 +136,23 @@
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Salespeople</h3>
                   <div id="chart">
-                    <apexchart type="donut" style="width: 100%;" ref="apexChartSalespeople" :options="donutSalespeople.chartOptions"
-                      :series="donutSalespeople.series">
-                    </apexchart>
+                    <apexchart type="donut" style="width: 100%;" ref="apexChartSalespeople"
+                      :options="donutSalespeople.chartOptions" :series="donutSalespeople.series"
+                      @dataPointSelection="openModalForPie" />
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Category</h3>
                   <div id="chart">
-                    <apexchart type="donut" style="width: 100%;" ref="apexChartSeatCategory" :options="donutSeatCategory.chartOptions"
-                      :series="donutSeatCategory.series">
-                    </apexchart>
+                    <apexchart type="donut" style="width: 100%;" ref="apexChartSeatCategory"
+                      :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series" />
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Industry</h3>
                   <div id="chart">
-                    <apexchart type="donut" style="width: 100%;" ref="apexChartIndustryType" :options="donutIndustryType.chartOptions"
-                      :series="donutIndustryType.series">
-                    </apexchart>
+                    <apexchart type="donut" style="width: 100%;" ref="apexChartIndustryType"
+                      :options="donutIndustryType.chartOptions" :series="donutIndustryType.series" />
                   </div>
                 </div>
               </div>
@@ -402,7 +400,7 @@ export default {
     getSelectedPeriod(startDate, endDate) {
       let [startYear, startMonth] = startDate.split('-');
       let [endYear, endMonth] = endDate.split('-');
-      
+
       let monthNames = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -500,6 +498,7 @@ export default {
       );
     },
     openModal(item) {
+
       this.selectedSalesPerson = item;
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.salesPerson === item.salesPerson
@@ -511,8 +510,25 @@ export default {
         seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
       }));
 
+
       this.isModalOpen = true;
     },
+
+    openModalForPie(event, chartContext, config) {
+      this.selectedSalesPerson = this.donutSalespeople.chartOptions.labels[config.dataPointIndex];
+      this.filteredSalesData = this.monthlyReport.filter(
+        entry => entry.salesPerson === this.selectedSalesPerson
+      );
+      this.filteredSalesData = this.filteredSalesData.map(item => ({
+        ...item,
+        closedDate: this.dateConvertor(item.closedDate),
+        startDate: this.dateConvertor(item.startDate),
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+      }));
+
+      this.isModalOpen = true;
+    },
+
     dataToDonut(data) {
       let salespersons = [];
       let totalSeats = [];
@@ -613,44 +629,42 @@ export default {
       this.topClient.seats = maxSeats;
     },
     generateReport(startDate, endDate) {
-    this.loading = true;
-    this.error = "";
+      this.loading = true;
+      this.error = "";
 
-    startDate = startDate.length <= 7 ? startDate + "-28" : startDate;
-    endDate = endDate.length <= 7 ? endDate + "-28" : endDate;
+      startDate = startDate.length <= 7 ? startDate + "-28" : startDate;
+      endDate = endDate.length <= 7 ? endDate + "-28" : endDate;
+      let start = new Date(startDate);
+      let end = new Date(endDate);
 
-    console.log(startDate + " and " + endDate)
-    let start = new Date(startDate);
-    let end = new Date(endDate);
-
-    if (end < start) {
+      if (end < start) {
         this.error = "End date must be after Start date";
         this.loading = false;
-    }else{
+      } else {
 
-      let endMonth = this.getMonthFromString(endDate);
-      let endYear = this.getYearFromString(endDate);
+        let endMonth = this.getMonthFromString(endDate);
+        let endYear = this.getYearFromString(endDate);
 
-      let startMonth = this.getMonthFromString(startDate);
-      let startYear = this.getYearFromString(startDate);
+        let startMonth = this.getMonthFromString(startDate);
+        let startYear = this.getYearFromString(startDate);
 
-      this.getSelectedPeriod(startDate, endDate);
-      let data = this.filterByClosedMonthYear(this.allOpportunites, startMonth, startYear, endMonth, endYear);
-      this.monthlyReport = this.filterBySeatCount(data);
-      
-      if (this.monthlyReport.length > 0) {
+        this.getSelectedPeriod(startDate, endDate);
+        let data = this.filterByClosedMonthYear(this.allOpportunites, startMonth, startYear, endMonth, endYear);
+        this.monthlyReport = this.filterBySeatCount(data);
+
+        if (this.monthlyReport.length > 0) {
           this.getCompanyWithHighestSeats(this.monthlyReport);
           this.summarizeData(this.monthlyReport);
           this.groupSeatCategoryBySeatCount(this.monthlyReport);
           this.groupSeatIndustryBySeatCount(this.monthlyReport);
           this.dataToDonut(this.summarizedData);
-      }else{
-        this.error = "There is no data for the selected period";
+        } else {
+          this.error = "There is no data for the selected period";
+        }
       }
+
+      this.loading = false;
     }
-    
-    this.loading = false;
-}
   },
   async mounted() {
     this.allOpportunites = await statistics.getAllOpportunities();
