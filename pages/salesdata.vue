@@ -246,6 +246,7 @@ export default {
       ],
       modalHeaders: [
         { text: "Company", value: "company" },
+        { text: "Salesperson", value: "salesPerson" },
         { text: "Category", value: "seatCategory" },
         { text: "Seats", value: "seatCount" },
         { text: "Industry", value: "industryType" },
