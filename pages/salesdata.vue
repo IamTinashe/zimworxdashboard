@@ -10,29 +10,45 @@
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="card text-center">
-              <h2 class="card-title" style="color: #000;">{{ selectedMonthYear }}</h2>
+              <h2 class="card-title" style="color: #000;">{{ selectedPeriod }}</h2>
             </div>
           </div>
-          <div class="col-md-6"></div>
+          <div class="col-md-4"></div>
           <div class="col-md-2 col-12">
-            <v-btn :color="defaultColor" class="mb-3" @click="dialog = true">Select Month</v-btn>
-            <v-dialog v-model="dialog" max-width="300" class="elevation-1 mt-0">
+            <v-btn :color="defaultColor" class="mb-3" @click="dialogForStart = true">Start Month</v-btn>
+            <v-dialog v-model="dialogForStart" max-width="300" class="elevation-1 mt-0">
               <v-card>
                 <v-card-title class="headline">Select a Month</v-card-title>
                 <v-card-text>
-                  <v-date-picker v-model="date" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" class="mt-4"
+                  <v-date-picker v-model="startDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" class="mt-4"
                     type="month" />
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn :color="defaultColor" @click="dialog = false">OK</v-btn>
+                  <v-btn :color="defaultColor" @click="dialogForStart = false">OK</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
+          <div class="col-md-2 col-12">
+            <v-btn :color="defaultColor" class="mb-3" @click="dialogForEnd = true">End Month</v-btn>
+            <v-dialog v-model="dialogForEnd" max-width="300" class="elevation-1 mt-0">
+              <v-card>
+                <v-card-title class="headline">Select a Month</v-card-title>
+                <v-card-text>
+                  <v-date-picker v-model="endDate" :allowed-dates="allowedDates" :min="minDate" :max="maxDate" class="mt-4"
+                    type="month" />
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn :color="defaultColor" @click="dialogForEnd = false">OK</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </div>
         </div>
       </div>
-      <div class="col-12" v-if="monthlyReport.length">
+      <div class="col-12" v-if="monthlyReport.length && error.length <= 0">
         <div class="row">
           <div class="col-12">
             <div class="card pb-3">
@@ -175,9 +191,7 @@
         <div class="row">
           <div class="col-12">
             <div class="card text-center py-5">
-              <h3 class="card-title">There is no data yet for <bold>{{ selectedMonthYear }}</bold>. Please choose a
-                different
-                month or check again in a few days.</h3>
+              <h3 class="card-title">{{ error }}</h3>
             </div>
           </div>
         </div>
@@ -193,12 +207,14 @@ export default {
   name: "salesdata",
   data() {
     return {
-      selectedMonthYear: "",
+      selectedPeriod: [],
       defaultColor: '#42b883',
-      dialog: false,
+      dialogForStart: false,
+      dialogForEnd: false,
       minDate: "2021-01",
       maxDate: this.getFormattedDate(),
-      date: this.getFormattedDate(),
+      startDate: this.getFormattedDate(),
+      endDate: this.getFormattedDate(),
       loading: true,
       allOpportunites: [],
       monthlyReport: [],
@@ -325,13 +341,16 @@ export default {
             }
           }
         }
-      }
+      },
+      error: ""
     };
   },
   watch: {
-    date(newDate) {
-      this.generateReport(newDate);
-      this.getSelectedMonthYear(newDate);
+    startDate(date) {
+      this.generateReport(date, this.endDate);
+    },
+    endDate(date) {
+      this.generateReport(this.startDate, date);
     },
     'donutSalespeople.series': {
       handler(newSeries) {
@@ -380,20 +399,25 @@ export default {
 
       return `${formattedDayOfMonth}-${formattedMonth}-${year}`;
     },
-    getSelectedMonthYear(date) {
-      let [year, month] = date.split('-');
+    getSelectedPeriod(startDate, endDate) {
+      let [startYear, startMonth] = startDate.split('-');
+      let [endYear, endMonth] = endDate.split('-');
+      
       let monthNames = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
       ];
-      let monthIndex = parseInt(month, 10) - 1;
-      this.selectedMonthYear = monthNames[monthIndex] + " " + year;
+
+      let startMonthIndex = parseInt(startMonth, 10) - 1;
+      let endMonthIndex = parseInt(endMonth, 10) - 1;
+
+      this.selectedPeriod = monthNames[startMonthIndex] + " " + startYear + " - " + monthNames[endMonthIndex] + " " + endYear;
     },
-    filterByClosedMonthYear(data, month, year) {
+    filterByClosedMonthYear(data, startMonth, startYear, endMonth, endYear) {
       return data.filter(item => {
         if (item.startDate && (item.stage == "Closed Won" || item.stage == "Payments" || item.stage == "Billing")) {
           let startDate = new Date(item.startDate * 1000);
-          return startDate.getMonth() === month && startDate.getFullYear() === year;
+          return startDate.getMonth() <= endMonth && startDate.getFullYear() <= endYear && startDate.getMonth() >= startMonth && startDate.getFullYear() >= startYear;
         }
         return false;
       });
@@ -539,11 +563,9 @@ export default {
       let groupedData = {};
       this.donutIndustryType.chartOptions.labels = [];
       this.donutIndustryType.series = [];
-      let k = 0;
 
       data.forEach(item => {
         let { industryType, seatCount } = item;
-        k = item.seatCount + k;
         if (item.seatType != "Replacement Seats") {
           if (groupedData[industryType]) {
             groupedData[industryType] = groupedData[industryType] + seatCount;
@@ -552,8 +574,6 @@ export default {
           }
         }
       });
-
-      console.log(k)
 
       let result = Object.keys(groupedData).map(category => ({
         IndustryType: category,
@@ -592,26 +612,49 @@ export default {
       this.topClient.name = topCompany;
       this.topClient.seats = maxSeats;
     },
-    generateReport(date) {
-      this.loading = true;
-      let month = this.getMonthFromString(date);
-      let year = this.getYearFromString(date);
-      this.getSelectedMonthYear(date);
-      let data = this.filterByClosedMonthYear(this.allOpportunites, month, year);
+    generateReport(startDate, endDate) {
+    this.loading = true;
+    this.error = "";
+
+    startDate = startDate.length <= 7 ? startDate + "-28" : startDate;
+    endDate = endDate.length <= 7 ? endDate + "-28" : endDate;
+
+    console.log(startDate + " and " + endDate)
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+
+    if (end < start) {
+        this.error = "End date must be after Start date";
+        this.loading = false;
+    }else{
+
+      let endMonth = this.getMonthFromString(endDate);
+      let endYear = this.getYearFromString(endDate);
+
+      let startMonth = this.getMonthFromString(startDate);
+      let startYear = this.getYearFromString(startDate);
+
+      this.getSelectedPeriod(startDate, endDate);
+      let data = this.filterByClosedMonthYear(this.allOpportunites, startMonth, startYear, endMonth, endYear);
       this.monthlyReport = this.filterBySeatCount(data);
+      
       if (this.monthlyReport.length > 0) {
-        this.getCompanyWithHighestSeats(this.monthlyReport)
-        this.summarizeData(this.monthlyReport);
-        this.groupSeatCategoryBySeatCount(this.monthlyReport);
-        this.groupSeatIndustryBySeatCount(this.monthlyReport);
-        this.dataToDonut(this.summarizedData);
+          this.getCompanyWithHighestSeats(this.monthlyReport);
+          this.summarizeData(this.monthlyReport);
+          this.groupSeatCategoryBySeatCount(this.monthlyReport);
+          this.groupSeatIndustryBySeatCount(this.monthlyReport);
+          this.dataToDonut(this.summarizedData);
+      }else{
+        this.error = "There is no data for the selected period";
       }
-      this.loading = false;
     }
+    
+    this.loading = false;
+}
   },
   async mounted() {
     this.allOpportunites = await statistics.getAllOpportunities();
-    this.generateReport(this.date);
+    this.generateReport(this.startDate, this.endDate);
     this.loading = false;
   }
 };
