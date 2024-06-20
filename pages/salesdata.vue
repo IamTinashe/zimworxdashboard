@@ -10,7 +10,7 @@
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="card text-center">
-              <h2 class="card-title" style="color: #000;">{{ selectedPeriod }}</h2>
+              <h3 class="card-title" style="color: #000;">{{ selectedPeriod }}</h3>
             </div>
           </div>
           <div class="col-md-4"></div>
