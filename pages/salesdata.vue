@@ -138,14 +138,14 @@
                   <div id="chart">
                     <apexchart type="donut" style="width: 100%;" ref="apexChartSalespeople"
                       :options="donutSalespeople.chartOptions" :series="donutSalespeople.series"
-                      @dataPointSelection="openModalForPie" />
+                      @dataPointSelection="openModalForSalesPie" />
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Category</h3>
                   <div id="chart">
                     <apexchart type="donut" style="width: 100%;" ref="apexChartSeatCategory"
-                      :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series" />
+                      :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series" @dataPointSelection="openModalForCategoryPie"/>
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
@@ -514,10 +514,25 @@ export default {
       this.isModalOpen = true;
     },
 
-    openModalForPie(event, chartContext, config) {
+    openModalForSalesPie(event, chartContext, config) {
       this.selectedSalesPerson = this.donutSalespeople.chartOptions.labels[config.dataPointIndex];
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.salesPerson === this.selectedSalesPerson
+      );
+      this.filteredSalesData = this.filteredSalesData.map(item => ({
+        ...item,
+        closedDate: this.dateConvertor(item.closedDate),
+        startDate: this.dateConvertor(item.startDate),
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+      }));
+
+      this.isModalOpen = true;
+    },
+
+    openModalForCategoryPie(event, chartContext, config) {
+      let category = this.donutSeatCategory.chartOptions.labels[config.dataPointIndex];
+      this.filteredSalesData = this.monthlyReport.filter(
+        entry => entry.seatCategory === category
       );
       this.filteredSalesData = this.filteredSalesData.map(item => ({
         ...item,
