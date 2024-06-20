@@ -152,7 +152,7 @@
                   <h3 class="card-title">Seats By Industry</h3>
                   <div id="chart">
                     <apexchart type="donut" style="width: 100%;" ref="apexChartIndustryType"
-                      :options="donutIndustryType.chartOptions" :series="donutIndustryType.series" />
+                      :options="donutIndustryType.chartOptions" :series="donutIndustryType.series" @dataPointSelection="openModalForIndustryPie"/>
                   </div>
                 </div>
               </div>
@@ -532,8 +532,25 @@ export default {
 
     openModalForCategoryPie(event, chartContext, config) {
       let category = this.donutSeatCategory.chartOptions.labels[config.dataPointIndex];
+      category = category == 'Dental Cordinator' ? 'SDDS' : category;
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.seatCategory === category && entry.seatType !== "Replacement Seats"
+      );
+      this.filteredSalesData = this.filteredSalesData.map(item => ({
+        ...item,
+        closedDate: this.dateConvertor(item.closedDate),
+        startDate: this.dateConvertor(item.startDate),
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental' : item.seatCategory
+      }));
+
+      this.isModalOpen = true;
+    },
+
+    openModalForIndustryPie(event, chartContext, config) {
+      let industry = this.donutIndustryType.chartOptions.labels[config.dataPointIndex];
+      console.log(industry)
+      this.filteredSalesData = this.monthlyReport.filter(
+        entry => entry.industryType === industry && entry.seatType !== "Replacement Seats"
       );
       this.filteredSalesData = this.filteredSalesData.map(item => ({
         ...item,
@@ -550,8 +567,10 @@ export default {
       let totalSeats = [];
 
       data.forEach(value => {
-        salespersons.push(value.salesPerson);
-        totalSeats.push(value.totalSeats);
+        if(value.seatType != "Replacement Seats"){
+          salespersons.push(value.salesPerson);
+          totalSeats.push(value.totalSeats);
+        }
       });
 
       this.donutSalespeople.chartOptions.labels = salespersons;
@@ -565,10 +584,12 @@ export default {
 
       data.forEach(item => {
         let { seatCategory, seatCount } = item;
-        if (groupedData[seatCategory]) {
-          groupedData[seatCategory] += seatCount;
-        } else {
-          groupedData[seatCategory] = seatCount;
+        if(item.seatType != "Replacement Seats"){
+          if (groupedData[seatCategory]) {
+            groupedData[seatCategory] += seatCount;
+          } else {
+            groupedData[seatCategory] = seatCount;
+          }
         }
       });
 
