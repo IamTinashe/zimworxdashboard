@@ -216,12 +216,9 @@
               <h4 slot="header" class="card-title">Top 10 Clients</h4>
               <el-table :data="tableData">
                 <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
-                <el-table-column min-width="150" sortable label="Email" property="email"></el-table-column>
                 <el-table-column min-width="150" sortable label="Salesperson" property="salesperson"></el-table-column>
                 <el-table-column min-width="150" sortable label="CSP" property="csp"></el-table-column>
                 <el-table-column min-width="150" sortable label="Industry" property="industry"></el-table-column>
-                <el-table-column min-width="100" sortable label="Locations"
-                  property="numberOfLocations"></el-table-column>
                 <el-table-column max-width="50" sortable label="Tenure" property="tenure"></el-table-column>
                 <el-table-column max-width="50" sortable label="Seats" property="totalSeats"></el-table-column>
                 <el-table-column max-width="50" sortable align="right" header-align="right" label="Revenue"
@@ -481,8 +478,8 @@ export default {
     this.monthlyReport = computations.selectValidReports(this.fetchedData);
     
     this.monthlyReport.push(this.fetchedData[this.fetchedData.length - 1]);
-    this.monthlyReport[this.monthlyReport.length - 1].totalSeats = this.monthlyReport[this.monthlyReport.length - 2].totalSeats + this.monthlyReport[this.monthlyReport.length - 1].seatedThisMonth - this.monthlyReport[this.monthlyReport.length - 1].lostSeatsThisMonth;
     this.monthlyReport[this.monthlyReport.length - 1].totalClientFacing = this.monthlyReport[this.monthlyReport.length - 2].totalClientFacing + this.monthlyReport[this.monthlyReport.length - 1].seatedThisMonth - this.monthlyReport[this.monthlyReport.length - 1].lostSeatsThisMonth;
+    this.monthlyReport[this.monthlyReport.length - 1].totalSeats = this.monthlyReport[this.monthlyReport.length - 1].totalClientFacing + this.monthlyReport[this.monthlyReport.length - 1].totalInternal;
 
     
     this.dsoData[0] = this.fetchedData[this.fetchedData.length - 1].totalSDDS - this.fetchedData[this.fetchedData.length - 1].totalDSOs;
