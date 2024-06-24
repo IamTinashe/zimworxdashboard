@@ -250,8 +250,6 @@ export default {
         { text: "Category", value: "seatCategory" },
         { text: "Seats", value: "seatCount" },
         { text: "Industry", value: "industryType" },
-        { text: "Practice Type", value: "practiceType" },
-        { text: "Source", value: "source" },
         { text: "Seat Type", value: "seatType" },
         { text: "Client Type", value: "clientType" },
         { text: "Days To Close", value: "totalTimeToClose" },
@@ -508,7 +506,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Coordinator' : item.seatCategory
       }));
 
 
@@ -524,7 +522,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Coordinator' : item.seatCategory
       }));
 
       this.isModalOpen = true;
@@ -532,7 +530,7 @@ export default {
 
     openModalForCategoryPie(event, chartContext, config) {
       let category = this.donutSeatCategory.chartOptions.labels[config.dataPointIndex];
-      category = category == 'Dental Cordinator' ? 'SDDS' : category;
+      category = category == 'Dental Coordinator' ? 'SDDS' : category;
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.seatCategory === category && entry.seatType !== "Replacement Seats"
       );
@@ -540,7 +538,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Coordinator' : item.seatCategory
       }));
 
       this.isModalOpen = true;
@@ -556,7 +554,7 @@ export default {
         ...item,
         closedDate: this.dateConvertor(item.closedDate),
         startDate: this.dateConvertor(item.startDate),
-        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Cordinator' : item.seatCategory
+        seatCategory: item.seatCategory == 'SDDS' ? 'Dental Coordinator' : item.seatCategory
       }));
 
       this.isModalOpen = true;
@@ -605,10 +603,10 @@ export default {
       });
       if (this.donutSeatCategory.chartOptions && this.donutSeatCategory.chartOptions.labels) {
         this.donutSeatCategory.chartOptions.labels = this.donutSeatCategory.chartOptions.labels.map(label => {
-          return label === 'SDDS' ? 'Dental Cordinator' : label;
+          return label === 'SDDS' ? 'Dental Coordinator' : label;
         });
       }
-      this.topCategory.name = result[0].seatCategory == 'SDDS' ? 'Dental Cordinator' : result[0].seatCategory;
+      this.topCategory.name = result[0].seatCategory == 'SDDS' ? 'Dental Coordinator' : result[0].seatCategory;
       this.topCategory.seats = result[0].totalSeats;
     },
 

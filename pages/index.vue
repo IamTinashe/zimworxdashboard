@@ -120,66 +120,30 @@
                 </line-chart>
               </div>
             </card>
-
-            <div class="row">
-              <div class="col-12 col-md-12">
-                <card type="chart" v-if="!loading">
-                  <template slot="header">
-                    <h5 class="card-category">This Month Seats</h5>
-                    <h3 class="card-title">
-                      <i class="tim-icons icon-bell-55 text-primary "></i>
-                      {{ thisMonthData[thisMonthData.length - 1].seatedThisMonth }}
-                      Seats<span style="float: right; font-size: 15px;">MTD Seats By Type</span>
-                    </h3>
-                  </template>
-                  <div class="row">
-                    <div class="col-12 col-md-10">
-
-                      <div class="chart-area">
-                        <line-chart style="height: 100%" :chart-data="purpleLineChart.chartData"
-                          :gradient-colors="purpleLineChart.gradientColors"
-                          :gradient-stops="purpleLineChart.gradientStops" :extra-options="purpleLineChart.extraOptions">
-                        </line-chart>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-2">
-                      <div class="row mb-4" v-for="(item, index) in byType">
-                        <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
-                        <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </card>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 col-md-12">
-                <card type="chart" v-if="!loading">
-                  <template slot="header">
-                    <h5 class="card-category">This Month Seats</h5>
-                    <h3 class="card-title">
-                      <i class="tim-icons icon-bell-55 text-primary "></i> MTD Seats By Categories
-                    </h3>
-                  </template>
-                  <div class="row">
-                    <div class="col-12 col-md-10">
-                      <div class="chart-area">
-                        <line-chart style="height: 100%" :chart-data="greenLineChart.chartData"
-                          :gradient-colors="greenLineChart.gradientColors"
-                          :gradient-stops="greenLineChart.gradientStops" :extra-options="greenLineChart.extraOptions">
-                        </line-chart>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-2">
-                      <div class="row mb-3" v-for="(item, index) in byCategory">
-                        <div class="rectangle" :style="{ backgroundColor: item.color }"></div>
-                        <p class="legend"> {{ item.number[item.number.length - 1] }} {{ item.label }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </card>
-              </div>
-            </div>
+              <card type="chart" v-if="!loading">
+                <template slot="header">
+                  <h3 class="card-title">
+                    Seats By Salesperson
+                  </h3>
+                </template>
+                <div class="chart-area">
+                  <bar-chart style="height: 100%" :chart-data="blueBarChart.chartData"
+                    :gradient-stops="blueBarChart.gradientStops" :extra-options="blueBarChart.extraOptions">
+                  </bar-chart>
+                </div>
+              </card>
+              <card type="chart" v-if="!loading">
+                <template slot="header">
+                  <h3 class="card-title">
+                    Revenue By Salesperson
+                  </h3>
+                </template>
+                <div class="chart-area">
+                  <bar-chart style="height: 100%" :chart-data="purpleBarChart.chartData"
+                    :gradient-stops="purpleBarChart.gradientStops" :extra-options="purpleBarChart.extraOptions">
+                  </bar-chart>
+                </div>
+              </card>
           </div>
           <div class="col-12 col-md-4">
             <div class="card text-center" v-if="!loading">
@@ -213,13 +177,13 @@
                 </div>
               </div>
             </div>
-            <div class="card">
+            <div class="card" v-if="!loading">
               <h3 class="card-title p-4" style="font-weight: 100;">
                 Seats By Industry
               </h3>
               <industry-pie-chart :data="activeClientList" v-if="!loading" />
             </div>
-            <div class="card">
+            <div class="card" v-if="!loading">
               <h3 class="card-title p-4" style="font-weight: 100;">
                 {{ dsoData[1] }} DSOs
                 <span style="float: right; font-size: 15px;">DSOs vs Single</span>
@@ -229,34 +193,8 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12 col-md-4" v-if="!loading">
-            <card type="chart">
-              <template slot="header">
-                <h3 class="card-title">
-                  Seats By Salesperson
-                </h3>
-              </template>
-              <div class="chart-area">
-                <bar-chart style="height: 100%" :chart-data="blueBarChart.chartData"
-                  :gradient-stops="blueBarChart.gradientStops" :extra-options="blueBarChart.extraOptions">
-                </bar-chart>
-              </div>
-            </card>
-            <card type="chart">
-              <template slot="header">
-                <h3 class="card-title">
-                  Revenue By Salesperson
-                </h3>
-              </template>
-              <div class="chart-area">
-                <bar-chart style="height: 100%" :chart-data="purpleBarChart.chartData"
-                  :gradient-stops="purpleBarChart.gradientStops" :extra-options="purpleBarChart.extraOptions">
-                </bar-chart>
-              </div>
-            </card>
-          </div>
-          <div class="col-12 col-md-8">
+        <div class="row" v-if="!loading">
+          <div class="col-12">
             <card card-body-classes="table-full-width">
               <h4 slot="header" class="card-title">Salespersons</h4>
               <el-table :data="salespersonSummary">
@@ -278,6 +216,7 @@
               <h4 slot="header" class="card-title">Top 10 Clients</h4>
               <el-table :data="tableData">
                 <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
+                <el-table-column min-width="150" sortable label="Email" property="email"></el-table-column>
                 <el-table-column min-width="150" sortable label="Salesperson" property="salesperson"></el-table-column>
                 <el-table-column min-width="150" sortable label="CSP" property="csp"></el-table-column>
                 <el-table-column min-width="150" sortable label="Industry" property="industry"></el-table-column>
@@ -357,28 +296,6 @@ export default {
         gradientColors: config.colors.primaryGradient,
         gradientStops: [1, 0.4, 0],
         categories: []
-      },
-      purpleLineChart: {
-        extraOptions: chartConfigs.purpleChartOptions,
-        chartData: {
-          labels: [],
-          datasets: []
-        },
-        gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.2, 0]
-      },
-      greenLineChart: {
-        extraOptions: chartConfigs.greenChartOptions,
-        chartData: {
-          labels: [],
-          datasets: []
-        },
-        gradientColors: [
-          'rgba(66,134,121,0.15)',
-          'rgba(66,134,121,0.0)',
-          'rgba(66,134,121,0)'
-        ],
-        gradientStops: [1, 0.4, 0]
       },
       blueBarChart: {
         extraOptions: chartConfigs.barChartOptions,
@@ -479,153 +396,6 @@ export default {
       this.bigChartData = [revenue, seats, clients];
       this.bigLineChart.chartData.datasets.data = this.bigChartData[0]
     },
-    setMTDSeatsByRole(date) {
-      let days = computations.getDaysInMonth(date.getMonth(), date.getFullYear());
-      let labels = []
-      for (let i = 1; i <= days; i++) { labels.push(i); }
-      this.greenLineChart.chartData.labels = labels;
-
-      this.thisMonthData = computations.selectThisMonthReports(this.fetchedData, date);
-
-      let tempArray = [];
-      let j = 0;
-      for (let i = 1; i <= this.thisMonthData.length; i++) {
-        if (this.thisMonthData[j].createdOn[2] == i && j < this.thisMonthData.length) {
-          tempArray[i - 1] = this.thisMonthData[j];
-          j++;
-        } else {
-          tempArray[i - 1] = this.thisMonthData[0];
-        }
-      }
-
-      this.thisMonthData = tempArray;
-      this.greenLineChart.extraOptions.scales.yAxes[0].ticks.suggestedMax = this.thisMonthData[this.thisMonthData.length - 1].seatedThisMonth;
-
-      let totalClosedSDDSThisMonth = [];
-      let totalClosedRCMThisMonth = [];
-      let totalClosedEAThisMonth = [];
-      let totalClosedBusDevThisMonth = [];
-      let totalClosedUKThisMonth = [];
-      let totalSeats = [];
-      let count = 0;
-      let seatData = [];
-
-      for (const key in this.thisMonthData) {
-        if (this.thisMonthData.hasOwnProperty(key)) {
-          const value = this.thisMonthData[key];
-          totalClosedSDDSThisMonth.push(this.thisMonthData[count].totalClosedSDDSThisMonth);
-          totalClosedRCMThisMonth.push(this.thisMonthData[count].totalClosedRCMThisMonth);
-          totalClosedEAThisMonth.push(this.thisMonthData[count].totalClosedEAThisMonth);
-          totalClosedBusDevThisMonth.push(this.thisMonthData[count].totalClosedBusDevThisMonth);
-          totalClosedUKThisMonth.push(this.thisMonthData[count].totalClosedUKThisMonth);
-          totalSeats.push(this.thisMonthData[count].seatedThisMonth)
-          count++;
-        }
-      }
-
-      seatData.push({ number: totalSeats, label: "Total Seats", color: config.colors.primary })
-      seatData.push({ number: totalClosedSDDSThisMonth, label: "SDDS", color: "#FFCE56" })
-      seatData.push({ number: totalClosedRCMThisMonth, label: "RCM", color: "#36A2EB" })
-      seatData.push({ number: totalClosedEAThisMonth, label: "EA", color: "#FF9900" })
-      seatData.push({ number: totalClosedBusDevThisMonth, label: "Bus. Dev.", color: "#9966CC" })
-      seatData.push({ number: totalClosedUKThisMonth, label: "UK", color: "#FF6384" })
-
-
-      this.byCategory = seatData;
-
-      let i = 0;
-      for (i = 0; i < seatData.length; i++) {
-        this.greenLineChart.chartData.datasets.push({
-          label: seatData[i].label,
-          fill: true,
-          borderColor: seatData[i].color,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: seatData[i].color,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: seatData[i].color,
-          pointBorderWidth: 10,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 1,
-          data: seatData[i].number
-        });
-      }
-    },
-
-    setMTDSeatsByCategory(date) {
-      let days = computations.getDaysInMonth(date.getMonth(), date.getFullYear());
-      let labels = []
-      for (let i = 1; i <= days; i++) { labels.push(i); }
-      this.purpleLineChart.chartData.labels = labels;
-
-      this.thisMonthData = computations.selectThisMonthReports(this.fetchedData, date);
-
-      let tempArray = [];
-      let j = 0;
-      for (let i = 1; i <= this.thisMonthData.length; i++) {
-        if (this.thisMonthData[j].createdOn[2] == i && j < this.thisMonthData.length) {
-          tempArray[i - 1] = this.thisMonthData[j];
-          j++;
-        } else {
-          tempArray[i - 1] = this.thisMonthData[0];
-        }
-      }
-
-      this.thisMonthData = tempArray;
-      this.purpleLineChart.extraOptions.scales.yAxes[0].ticks.suggestedMax = this.thisMonthData[this.thisMonthData.length - 1].seatedThisMonth;
-
-      let newSeats = [];
-      let additionalSeats = [];
-      let replacements = [];
-      let internal = [];
-      let totalSeats = [];
-      let count = 0;
-      let seatData = [];
-
-      for (const key in this.thisMonthData) {
-        if (this.thisMonthData.hasOwnProperty(key)) {
-          const value = this.thisMonthData[key];
-          newSeats.push(this.thisMonthData[count].totalClosedNewSeatsThisMonth);
-          additionalSeats.push(this.thisMonthData[count].totalClosedAdditionalSeatsThisMonth)
-          replacements.push(this.thisMonthData[count].totalClosedReplacementSeatsThisMonth)
-          internal.push(this.thisMonthData[count].totalClosedInternalSeatsThisMonth)
-          totalSeats.push(this.thisMonthData[count].seatedThisMonth)
-          count++;
-        }
-      }
-
-      seatData.push({ number: totalSeats, label: "Total Seats", color: config.colors.primary })
-      seatData.push({ number: newSeats, label: "New Seats", color: "#9966CC" })
-      seatData.push({ number: additionalSeats, label: "Additional Seats", color: "#FF6347" })
-      seatData.push({ number: replacements, label: "Replacement Seats", color: "#FF8C00" })
-      seatData.push({ number: internal, label: "Internal Seats", color: "#87CEEB" })
-
-
-      this.byType = seatData;
-
-      let i = 0;
-      for (i = 0; i < seatData.length; i++) {
-        this.purpleLineChart.chartData.datasets.push({
-          label: seatData[i].label,
-          fill: true,
-          borderColor: seatData[i].color,
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          pointBackgroundColor: seatData[i].color,
-          pointBorderColor: 'rgba(255,255,255,0)',
-          pointHoverBackgroundColor: seatData[i].color,
-          pointBorderWidth: 10,
-          pointHoverRadius: 4,
-          pointHoverBorderWidth: 15,
-          pointRadius: 1,
-          data: seatData[i].number
-        });
-      }
-    },
-
     setAvgTenure() {
       let filteredData = this.activeClientList.filter(item => item.tenure !== null && !isNaN(item.tenure));
 
@@ -709,12 +479,15 @@ export default {
     this.setAvgTenure();
     this.fetchedData.sort(computations.compareCreatedOn);
     this.monthlyReport = computations.selectValidReports(this.fetchedData);
+    
     this.monthlyReport.push(this.fetchedData[this.fetchedData.length - 1]);
+    this.monthlyReport[this.monthlyReport.length - 1].totalSeats = this.monthlyReport[this.monthlyReport.length - 2].totalSeats + this.monthlyReport[this.monthlyReport.length - 1].seatedThisMonth - this.monthlyReport[this.monthlyReport.length - 1].lostSeatsThisMonth;
+    this.monthlyReport[this.monthlyReport.length - 1].totalClientFacing = this.monthlyReport[this.monthlyReport.length - 2].totalClientFacing + this.monthlyReport[this.monthlyReport.length - 1].seatedThisMonth - this.monthlyReport[this.monthlyReport.length - 1].lostSeatsThisMonth;
+
+    
     this.dsoData[0] = this.fetchedData[this.fetchedData.length - 1].totalSDDS - this.fetchedData[this.fetchedData.length - 1].totalDSOs;
     this.dsoData[1] = this.fetchedData[this.fetchedData.length - 1].totalDSOs;
     this.setBigChartData();
-    this.setMTDSeatsByCategory(this.date);
-    this.setMTDSeatsByRole(this.date);
     this.initBigChart(0);
     this.loading = false;
 
