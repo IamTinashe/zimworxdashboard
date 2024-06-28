@@ -396,7 +396,7 @@ export default {
       let formattedDayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
       let formattedMonth = month < 10 ? '0' + month : month;
 
-      return `${formattedDayOfMonth}-${formattedMonth}-${year}`;
+      return `${formattedMonth}-${formattedDayOfMonth}-${year}`;
     },
     getSelectedPeriod(startDate, endDate) {
       let [startYear, startMonth] = startDate.split('-');
