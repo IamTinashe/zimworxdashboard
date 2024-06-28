@@ -194,23 +194,6 @@
         </div>
 
         <div class="row" v-if="!loading">
-          <div class="col-12">
-            <card card-body-classes="table-full-width">
-              <h4 slot="header" class="card-title">Salespersons</h4>
-              <el-table :data="salespersonSummary">
-                <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
-                <el-table-column min-width="100" sortable label="Total Seats" property="totalSeats"></el-table-column>
-                <el-table-column max-width="50" sortable label="Clients" property="totalClients"></el-table-column>
-                <el-table-column max-width="20" sortable label="Goal" property="goal"></el-table-column>
-                <el-table-column max-width="30" sortable label="Forecast" property="forecast"></el-table-column>
-                <el-table-column max-width="20" sortable align="right" header-align="right" label="Won"
-                  property="won"></el-table-column>
-              </el-table>
-            </card>
-          </div>
-        </div>
-
-        <div class="row" v-if="!loading">
           <div class="col-12 col-md-12">
             <card card-body-classes="table-full-width">
               <h4 slot="header" class="card-title">Top 10 Clients</h4>
@@ -433,8 +416,6 @@ export default {
         salespersonData[salesperson].totalSeats += client.totalSeats;
         salespersonData[salesperson].totalRevenue += client.revenue;
       });
-
-      console.log(seats)
 
       this.salespersonSummary = Object.values(salespersonData);
       this.salespersonSummary.sort((a, b) => b.totalSeats - a.totalSeats);

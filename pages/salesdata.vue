@@ -145,14 +145,16 @@
                   <h3 class="card-title">Seats By Category</h3>
                   <div id="chart">
                     <apexchart type="donut" style="width: 100%;" ref="apexChartSeatCategory"
-                      :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series" @dataPointSelection="openModalForCategoryPie"/>
+                      :options="donutSeatCategory.chartOptions" :series="donutSeatCategory.series"
+                      @dataPointSelection="openModalForCategoryPie" />
                   </div>
                 </div>
                 <div class="col-12 col-md-4">
                   <h3 class="card-title">Seats By Industry</h3>
                   <div id="chart">
                     <apexchart type="donut" style="width: 100%;" ref="apexChartIndustryType"
-                      :options="donutIndustryType.chartOptions" :series="donutIndustryType.series" @dataPointSelection="openModalForIndustryPie"/>
+                      :options="donutIndustryType.chartOptions" :series="donutIndustryType.series"
+                      @dataPointSelection="openModalForIndustryPie" />
                   </div>
                 </div>
               </div>
@@ -413,7 +415,9 @@ export default {
     filterByClosedMonthYear(data, startMonth, startYear, endMonth, endYear) {
       return data.filter(item => {
         if (item.startDate && (item.stage == "Closed Won" || item.stage == "Payments" || item.stage == "Billing")) {
+          item.startDate += 5 * 3600;
           let startDate = new Date(item.startDate * 1000);
+
           return startDate.getMonth() <= endMonth && startDate.getFullYear() <= endYear && startDate.getMonth() >= startMonth && startDate.getFullYear() >= startYear;
         }
         return false;
@@ -565,7 +569,7 @@ export default {
       let totalSeats = [];
 
       data.forEach(value => {
-        if(value.seatType != "Replacement Seats"){
+        if (value.seatType != "Replacement Seats") {
           salespersons.push(value.salesPerson);
           totalSeats.push(value.totalSeats);
         }
@@ -582,7 +586,7 @@ export default {
 
       data.forEach(item => {
         let { seatCategory, seatCount } = item;
-        if(item.seatType != "Replacement Seats"){
+        if (item.seatType != "Replacement Seats") {
           if (groupedData[seatCategory]) {
             groupedData[seatCategory] += seatCount;
           } else {
@@ -686,7 +690,7 @@ export default {
         this.getSelectedPeriod(startDate, endDate);
         let data = this.filterByClosedMonthYear(this.allOpportunites, startMonth, startYear, endMonth, endYear);
         this.monthlyReport = this.filterBySeatCount(data);
-
+        
         if (this.monthlyReport.length > 0) {
           this.getCompanyWithHighestSeats(this.monthlyReport);
           this.summarizeData(this.monthlyReport);
