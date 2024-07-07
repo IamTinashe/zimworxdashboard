@@ -119,6 +119,24 @@ class Statitics {
       });
     }
 
+    static getSalesStats(year){
+      let api = `${base}/sales/year/${year}`;
+      return new Promise(async (resolve, reject) => {
+        try {
+          let response = await axios.get(api, {
+            credentials: true,
+            auth: {
+              username: authCredentials.username,
+              password: authCredentials.password
+            }
+          });
+          resolve(response.data);
+        } catch (error) {
+          reject(error.response);
+        }
+      });
+    }
+
     static getAllInactiveClients(){
       let api = `${base}/customer/nonactiveclients`;
       return new Promise(async (resolve, reject) => {

@@ -158,6 +158,16 @@
                   </div>
                 </div>
               </div>
+
+            </div>
+            <div class="card text-center py-5">
+              <div class="row">
+                <div class="col-12">
+                  <h3 class="card-title">Actual vs Forecast vs Goal</h3>
+                  <apexchart type="bar" height="500" ref="apexChartActualForecast"
+                    :options="actualForecast.chartOptions" :series="actualForecast.chartSeries" />
+                </div>
+              </div>
             </div>
             <v-data-table :headers="headers" :items="summarizedData" class="elevation-1" @click:row="openModal">
               <template v-slot:top>
@@ -208,6 +218,7 @@ export default {
   data() {
     return {
       selectedPeriod: [],
+      forecastActual: [],
       defaultColor: '#42b883',
       dialogForStart: false,
       dialogForEnd: false,
@@ -341,6 +352,48 @@ export default {
           }
         }
       },
+      actualForecast: {
+        chartOptions: {
+          chart: {
+            type: 'bar',
+            height: 350,
+          },
+          plotOptions: {
+            bar: {
+              horizontal: false,
+              columnWidth: '55%',
+              endingShape: 'rounded',
+            },
+          },
+          dataLabels: {
+            enabled: false,
+          },
+          stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent'],
+          },
+          xaxis: {
+            categories: [],
+          },
+          yaxis: {
+            title: {
+              text: 'Values',
+            },
+          },
+          fill: {
+            opacity: 1,
+          },
+          tooltip: {
+            y: {
+              formatter: function (val) {
+                return val
+              },
+            },
+          },
+        },
+        chartSeries: [],
+      },
       error: ""
     };
   },
@@ -378,6 +431,26 @@ export default {
       },
       deep: true
     },
+    'actualForecast.chartSeries': {
+      handler(newSeries) {
+        if (this.$refs.apexChartActualForecast) {
+          this.$refs.apexChartActualForecast.updateSeries(newSeries);
+        }
+      },
+      deep: true
+    },
+    'actualForecast.chartOptions.xaxis.categories': {
+      handler(newCategories) {
+        if (this.$refs.apexChartActualForecast) {
+          this.$refs.apexChartActualForecast.updateOptions({
+            xaxis: {
+              categories: newCategories
+            }
+          });
+        }
+      },
+      deep: true
+    }
   },
   methods: {
     allowedDates: val => true,
@@ -500,8 +573,85 @@ export default {
         0
       );
     },
-    openModal(item) {
 
+    actualForecashChart(data) {
+      let parts = this.selectedPeriod.split(' ');
+      let monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      let startMonth = monthNames.indexOf(parts[0]);
+      let startYear = parts[1];
+      let endMonth = monthNames.indexOf(parts[3]);
+      let endYear = parts[4];
+
+      let filteredData = data.filter(item => {
+        const itemDate = new Date(item.year, item.month - 1);
+        const startDate = new Date(startYear, startMonth);
+        const endDate = new Date(endYear, endMonth);
+
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+
+      const salespersons = [...new Set(filteredData.map(item => item.salesperson))];
+      const actual = salespersons.map(salesperson => {
+        return filteredData
+          .filter(item => item.salesperson === salesperson)
+          .reduce((sum, item) => sum + item.actual, 0);
+      });
+
+      const goal = salespersons.map(salesperson => {
+        return filteredData
+          .filter(item => item.salesperson === salesperson)
+          .reduce((sum, item) => sum + item.goal, 0);
+      });
+
+      const forecasted = salespersons.map(salesperson => {
+        return filteredData
+          .filter(item => item.salesperson === salesperson)
+          .reduce((sum, item) => sum + item.forecasted, 0);
+      });
+
+      // Combine salespersons, actual, goal, and forecasted into a single array for sorting
+      const combined = salespersons.map((salesperson, index) => {
+        return {
+          salesperson,
+          actual: actual[index],
+          goal: goal[index],
+          forecasted: forecasted[index]
+        };
+      });
+
+      // Sort combined array by goal
+      combined.sort((a, b) => b.actual - a.actual);
+
+      // Separate sorted data back into individual arrays
+      const sortedSalespersons = combined.map(item => item.salesperson);
+      const sortedActual = combined.map(item => item.actual);
+      const sortedGoal = combined.map(item => item.goal);
+      const sortedForecasted = combined.map(item => item.forecasted);
+
+      // Calculate total sums
+      const totalActual = sortedActual.reduce((sum, value) => sum + value, 0);
+      const totalGoal = sortedGoal.reduce((sum, value) => sum + value, 0);
+      const totalForecasted = sortedForecasted.reduce((sum, value) => sum + value, 0);
+
+      // Append "Total" to salespersons and total sums to respective arrays
+      sortedSalespersons.push("Total");
+      sortedActual.push(totalActual);
+      sortedGoal.push(totalGoal);
+      sortedForecasted.push(totalForecasted);
+
+      this.actualForecast.chartOptions.xaxis.categories = sortedSalespersons;
+
+      this.actualForecast.chartSeries = [
+        { name: 'Actual', data: sortedActual },
+        { name: 'Forecasted', data: sortedForecasted },
+        { name: 'Goal', data: sortedGoal },
+      ];
+    },
+    openModal(item) {
       this.selectedSalesPerson = item;
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.salesPerson === item.salesPerson && entry.seatType !== "Replacement Seats"
@@ -550,7 +700,6 @@ export default {
 
     openModalForIndustryPie(event, chartContext, config) {
       let industry = this.donutIndustryType.chartOptions.labels[config.dataPointIndex];
-      console.log(industry)
       this.filteredSalesData = this.monthlyReport.filter(
         entry => entry.industryType === industry && entry.seatType !== "Replacement Seats"
       );
@@ -690,12 +839,13 @@ export default {
         this.getSelectedPeriod(startDate, endDate);
         let data = this.filterByClosedMonthYear(this.allOpportunites, startMonth, startYear, endMonth, endYear);
         this.monthlyReport = this.filterBySeatCount(data);
-        
+
         if (this.monthlyReport.length > 0) {
           this.getCompanyWithHighestSeats(this.monthlyReport);
           this.summarizeData(this.monthlyReport);
           this.groupSeatCategoryBySeatCount(this.monthlyReport);
           this.groupSeatIndustryBySeatCount(this.monthlyReport);
+          this.actualForecashChart(this.forecastActual);
           this.dataToDonut(this.summarizedData);
         } else {
           this.error = "There is no data for the selected period";
@@ -707,6 +857,7 @@ export default {
   },
   async mounted() {
     this.allOpportunites = await statistics.getAllOpportunities();
+    this.forecastActual = await statistics.getSalesStats(2024);
     this.generateReport(this.startDate, this.endDate);
     this.loading = false;
   }
