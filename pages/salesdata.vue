@@ -164,7 +164,7 @@
               <div class="row">
                 <div class="col-12">
                   <h3 class="card-title">Actual vs Forecast vs Goal</h3>
-                  <apexchart type="bar" height="500" ref="apexChartActualForecast"
+                  <apexchart type="bar" height="600" ref="apexChartActualForecast"
                     :options="actualForecast.chartOptions" :series="actualForecast.chartSeries" />
                 </div>
               </div>
@@ -378,7 +378,7 @@ export default {
           },
           yaxis: {
             title: {
-              text: 'Values',
+              text: 'Seats Won',
             },
           },
           fill: {
