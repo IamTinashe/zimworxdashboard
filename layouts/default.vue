@@ -30,7 +30,7 @@
             path: '/roll-offs'
           }"
         >
-        </sidebar-item> -->
+        </sidebar-item>
         <sidebar-item
           :link="{
             name: $t('sidebar.salespredictivemodelling'),
@@ -39,7 +39,7 @@
           }"
         >
         </sidebar-item>
-        <!--<sidebar-item
+        <sidebar-item
           :link="{
             name: $t('sidebar.supportDDS'),
             icon: 'tim-icons icon-atom',

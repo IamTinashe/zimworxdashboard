@@ -38,7 +38,7 @@ module.exports = {
     "charts": "Charts",
     "calendar": "Calendar",
     "supportDDS": "Support DDS",
-    "salesdata": "Sales Data",
+    "salesdata": "Sales Statistics",
     "salespredictivemodelling": "Predictive Modelling",
     "roll-offs": "Roll-Offs"
   }
