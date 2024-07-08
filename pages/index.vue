@@ -146,7 +146,7 @@
               </card>
           </div>
           <div class="col-12 col-md-4">
-            <div class="card text-center" v-if="!loading">
+            <!--<div class="card text-center" v-if="!loading">
               <div class="row">
                 <div class="col-12 col-md-4" style="border-right: 1px solid #eee;">
                   <div class="card-header headerClasses">
@@ -175,8 +175,8 @@
                     </slot>
                   </div>
                 </div>
-              </div>
-            </div>
+              </div> 
+            </div>-->
             <div class="card" v-if="!loading">
               <h3 class="card-title p-4" style="font-weight: 100;">
                 Seats By Industry
