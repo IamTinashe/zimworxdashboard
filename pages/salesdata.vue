@@ -645,6 +645,26 @@ export default {
 
       this.actualForecast.chartOptions.xaxis.categories = sortedSalespersons;
 
+      this.actualForecast.chartOptions = {
+        ...this.actualForecast.chartOptions,
+        xaxis: {
+          categories: sortedSalespersons
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: function (val) {
+            return val.toFixed(0);
+          }
+        },
+        plotOptions: {
+          bar: {
+            dataLabels: {
+              position: 'top'
+            }
+          }
+        },
+      };
+
       this.actualForecast.chartSeries = [
         { name: 'Actual', data: sortedActual },
         { name: 'Forecasted', data: sortedForecasted },
