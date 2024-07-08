@@ -667,7 +667,7 @@ export default {
 
       this.actualForecast.chartSeries = [
         { name: 'Actual', data: sortedActual },
-        { name: 'Forecasted', data: sortedForecasted },
+        { name: 'Forecast (Beginning of the month)', data: sortedForecasted },
         { name: 'Goal', data: sortedGoal },
       ];
     },
