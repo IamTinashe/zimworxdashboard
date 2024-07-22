@@ -197,7 +197,7 @@
           <div class="col-12 col-md-12">
             <card card-body-classes="table-full-width">
               <h4 slot="header" class="card-title">Top 10 Clients</h4>
-              <el-table :data="tableData">
+              <el-table :data="top10Clients">
                 <el-table-column min-width="150" sortable label="Name" property="name"></el-table-column>
                 <el-table-column min-width="150" sortable label="Salesperson" property="salesperson"></el-table-column>
                 <el-table-column min-width="150" sortable label="CSP" property="csp"></el-table-column>
@@ -207,6 +207,7 @@
                 <el-table-column max-width="50" sortable align="right" header-align="right" label="Revenue"
                   property="revenue"></el-table-column>
               </el-table>
+              <el-button class="el-button" type="primary" @click="downloadCSV">Download All Clients</el-button>
             </card>
           </div>
         </div>
@@ -258,6 +259,7 @@ export default {
   data() {
     return {
       byType: [],
+      top10Clients: {},
       byCategory: [],
       activeClientList: [],
       avgTenure: 0,
@@ -389,13 +391,14 @@ export default {
 
     getTopTenClients(clients) {
       clients.sort((a, b) => b.totalSeats - a.totalSeats);
-      let top10Clients = clients.slice(0, 10);
-      top10Clients.forEach(client => {
+      this.top10Clients = clients;
+      this.top10Clients = this.top10Clients.slice(0, 10);
+      this.top10Clients.forEach(client => {
         client.revenue = `$${Math.ceil(client.revenue)}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         client.tenure = this.formatDaysToYearsMonthsDays(client.tenure);
       });
 
-      return top10Clients;
+      return clients;
     },
 
     setClientsBySalesperson(clients) {
@@ -427,6 +430,35 @@ export default {
         this.purpleBarChart.chartData.labels.push(salesperson.name);
         this.purpleBarChart.chartData.datasets[0].data.push(salesperson.totalRevenue);
       })
+    },
+
+    downloadCSV() {
+      const headers = ["Name", "Salesperson", "Industry", "Seats", "Revenue", "Number Of Locations", "State", "Country", "DSO", "Start Date"];
+      const rows = this.tableData.map(row => [
+        row.name.replace(/,/g, ""),
+        row.salesperson,
+        row.industry,
+        row.totalSeats,
+        row.revenue,
+        row.numberOfLocations,
+        row.state,
+        row.country,
+        row.dso,
+        row.startdate
+      ]);
+      
+      let csvContent = "data:text/csv;charset=utf-8," 
+        + headers.join(",") + "\n" 
+        + rows.map(e => e.join(",")).join("\n");
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "clients.csv");
+      document.body.appendChild(link); // Required for FF
+
+      link.click();
+      document.body.removeChild(link);
     },
 
     formatDaysToYearsMonthsDays(totalDays) {
@@ -501,5 +533,21 @@ export default {
 
 .color-black {
   color: black !important;
+}
+
+.el-button {
+  margin-bottom: 20px;
+  padding: 5px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+  border: 2px solid #42b883;
+  border-radius: 4px;
+  float: right;
+  margin-right: 20px;
+}
+
+.el-button:hover {
+  background-color: #42b883;
+  color: white;
 }
 </style>
