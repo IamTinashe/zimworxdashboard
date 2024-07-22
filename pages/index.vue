@@ -216,6 +216,7 @@
   </div>
 </template>
 <script>
+import * as XLSX from 'xlsx';
 import LineChart from '@/components/Charts/LineChart';
 import BarChart from '@/components/Charts/BarChart';
 import SalesPieChart from '@/components/Charts/SalesPieChart.vue';
@@ -433,7 +434,7 @@ export default {
     },
 
     downloadCSV() {
-      const headers = ["Name", "Salesperson", "Industry", "Seats", "Revenue", "Number Of Locations", "State", "Country", "DSO", "Start Date"];
+      const headers = ["Name", "Salesperson", "Industry", "Seats", "Revenue", "Number Of Locations", "State", "Country", "DSO", "Roll-on Date"];
       const rows = this.tableData.map(row => [
         row.name.replace(/,/g, ""),
         row.salesperson,
@@ -451,14 +452,11 @@ export default {
         + headers.join(",") + "\n" 
         + rows.map(e => e.join(",")).join("\n");
 
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "clients.csv");
-      document.body.appendChild(link); // Required for FF
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Clients");
 
-      link.click();
-      document.body.removeChild(link);
+      XLSX.writeFile(wb, "clients.xlsx");
     },
 
     formatDaysToYearsMonthsDays(totalDays) {

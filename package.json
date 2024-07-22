@@ -30,7 +30,8 @@
     "vue-apexcharts": "^1.6.2",
     "vue-chartjs": "3.5.1",
     "vue-i18n": "8.0.0",
-    "vue2-transitions": "0.3.0"
+    "vue2-transitions": "0.3.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
