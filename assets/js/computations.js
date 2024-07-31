@@ -2,7 +2,10 @@ class Computations {
       static isLastDayOfMonth(date) {
         const nextDay = new Date(date);
         nextDay.setDate(date.getDate() + 1);
-        return nextDay.getMonth() !== date.getMonth();
+
+        let tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return nextDay.getMonth() !== date.getMonth() && nextDay.toDateString() !== tomorrow.toDateString();
       }
 
       static isThisMonth(createdOn, date) {
