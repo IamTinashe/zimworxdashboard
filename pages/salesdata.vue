@@ -488,7 +488,7 @@ export default {
     filterByClosedMonthYear(data, startMonth, startYear, endMonth, endYear) {
       return data.filter(item => {
         if (item.startDate && (item.stage == "Closed Won" || item.stage == "Payments" || item.stage == "Billing")) {
-          item.startDate += 5 * 3600;
+          item.startDate += 8 * 3600;
           let startDate = new Date(item.startDate * 1000);
 
           return startDate.getMonth() <= endMonth && startDate.getFullYear() <= endYear && startDate.getMonth() >= startMonth && startDate.getFullYear() >= startYear;
