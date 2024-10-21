@@ -3,7 +3,7 @@ export default {
   mode: "universal",
   env: {
     //base: process.env.BASE_URL || "http://localhost:8080",
-    base: process.env.BASE_URL || "https://zimworx.com/odoo",
+    base: process.env.BASE_URL || "https://api.zimworx.com/odoo",
     authCredentials: {
       username: "username",
       password: "password"
