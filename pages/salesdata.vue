@@ -667,7 +667,7 @@ export default {
 
       this.actualForecast.chartSeries = [
         { name: 'Actual', data: sortedActual },
-        { name: 'Forecast (Beginning of the month)', data: sortedForecasted },
+        { name: 'Forecast', data: sortedForecasted },
         { name: 'Goal', data: sortedGoal },
       ];
     },
@@ -877,7 +877,7 @@ export default {
   },
   async mounted() {
     this.allOpportunites = await statistics.getAllOpportunities();
-    this.forecastActual = await statistics.getSalesStats(2025);
+    this.forecastActual = await statistics.getSalesStats(2024);
     this.generateReport(this.startDate, this.endDate);
     this.loading = false;
   }
