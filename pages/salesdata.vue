@@ -877,7 +877,7 @@ export default {
   },
   async mounted() {
     this.allOpportunites = await statistics.getAllOpportunities();
-    this.forecastActual = await statistics.getSalesStats(2024);
+    this.forecastActual = await statistics.getSalesStats(2025);
     this.generateReport(this.startDate, this.endDate);
     this.loading = false;
   }
